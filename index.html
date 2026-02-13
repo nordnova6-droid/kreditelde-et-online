@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gizli Etiraf Oyunu</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="font-family: Arial; text-align:center; margin-top:100px;">
+
+<h2>Anonim Etiraf Göndər 💌</h2>
+
+<input type="text" id="message" placeholder="Mesajınızı yazın" style="width:300px; padding:10px;"><br><br>
+<button onclick="sendMessage()" style="padding:10px 20px;">Göndər</button>
+
+<p id="status"></p>
+
+<script>
+  const supabaseUrl = "BURAYA_SUPABASE_URL";
+  const supabaseKey = "BURAYA_PUBLISHABLE_KEY";
+
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  async function sendMessage() {
+    const message = document.getElementById("message").value;
+
+    if (!message) {
+      document.getElementById("status").innerText = "Mesaj boş ola bilməz!";
+      return;
+    }
+
+    const { error } = await supabase
+      .from("messages")
+      .insert([{ message: message }]);
+
+    if (error) {
+      document.getElementById("status").innerText = "Xəta baş verdi!";
+    } else {
+      document.getElementById("status").innerText = "Mesaj göndərildi!";
+      document.getElementById("message").value = "";
+    }
+  }
+</script>
+
+</body>
+</html>
