@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Anonim Oyun</title>
+  <title>Test</title>
 </head>
 <body>
 
-<h2>Anonim Mesaj Göndər</h2>
+<h2>Test Səhifə</h2>
 
 <input type="text" id="name" placeholder="Adınızı yazın"><br><br>
 <textarea id="message" placeholder="Mesajınızı yazın"></textarea><br><br>
@@ -15,32 +15,9 @@
 <p id="status"></p>
 
 <script>
-  const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co";
-  const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH";
-
-  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-  document.getElementById("sendBtn").addEventListener("click", async () => {
-
-    const name = document.getElementById("name").value;
-    const message = document.getElementById("message").value;
-
-    if (!name || !message) {
-      document.getElementById("status").innerText = "Bütün xanaları doldurun!";
-      return;
-    }
-
-    const { error } = await supabase
-      .from("messages")
-      .insert([{ name: name, message: message }]);
-
-    if (error) {
-      document.getElementById("status").innerText = "Xəta: " + error.message;
-    } else {
-      document.getElementById("status").innerText = "Mesaj göndərildi!";
-    }
-
-  });
+document.getElementById("sendBtn").addEventListener("click", function() {
+  document.getElementById("status").innerText = "DÜYMƏ İŞLƏDİ";
+});
 </script>
 
 </body>
