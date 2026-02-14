@@ -21,12 +21,10 @@ const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co";
 const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
-
 const adminPassword = "service.2000";
 
-// Mesaj göndərmə
+// 🔹 Mesaj göndərmə
 window.sendMessage = async function() {
-
   const name = document.getElementById("name").value;
   const message = document.getElementById("message").value;
 
@@ -44,10 +42,10 @@ window.sendMessage = async function() {
   } else {
     document.getElementById("status").innerText = "Mesaj göndərildi!";
   }
-}
+};
 
 
-// 🔐 Admin yoxlaması (?kod=service.2000)
+// 🔐 Admin yoxlaması
 const urlParams = new URLSearchParams(window.location.search);
 const kod = urlParams.get("kod");
 
@@ -70,21 +68,33 @@ async function loadMessages() {
   container.innerHTML = "<h2>Gələn Mesajlar:</h2>";
 
   data.forEach(msg => {
-    const p = document.createElement("p");
-    p.textContent = msg.name + ": " + msg.message;
-    container.appendChild(p);
+    const div = document.createElement("div");
+    div.style.border = "1px solid black";
+    div.style.padding = "10px";
+    div.style.marginBottom = "10px";
+
+    const text = document.createElement("p");
+    text.textContent = msg.name + ": " + msg.message;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Sil";
+    deleteBtn.onclick = async () => {
+      await supabase
+        .from("messages")
+        .delete()
+        .eq("id", msg.id);
+
+      div.remove();
+    };
+
+    div.appendChild(text);
+    div.appendChild(deleteBtn);
+    container.appendChild(div);
   });
 
   document.body.appendChild(container);
 }
 </script>
 
-
-// 🔹 Mesaj göndərmə funksiyası
-window.sendMessage = async function() {
-
-  const name = document.getElementById("name").value;
-  const message = document.getElementById("message").value;
-
-  if (!name || !message) {
-    document.getElementById("status").innerText = "Bütün xanaları doldurun!";
+</body>
+</html>
