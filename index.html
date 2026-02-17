@@ -9,47 +9,67 @@
 
 body{
 margin:0;
-background:#0a0a0a;
-font-family:Arial, sans-serif;
+background:#1a1a1a;
 display:flex;
-flex-direction:column;
-align-items:center;
 justify-content:center;
+align-items:center;
 height:100vh;
+font-family:Arial, sans-serif;
+}
+
+/* PHONE BODY */
+
+.phone{
+width:360px;
+height:720px;
+background:#000;
+border-radius:40px;
+box-shadow:0 0 60px rgba(0,0,0,0.8);
+position:relative;
+padding:25px 20px;
+box-sizing:border-box;
 overflow:hidden;
-color:white;
 }
 
-/* Light particles */
-body::before{
-content:"";
-position:fixed;
-width:200%;
-height:200%;
-background:radial-gradient(circle at 30% 40%, rgba(255,215,0,0.08), transparent 40%),
-radial-gradient(circle at 70% 60%, rgba(255,215,0,0.05), transparent 40%);
-animation:move 20s linear infinite;
+/* Notch */
+.notch{
+position:absolute;
+top:0;
+left:50%;
+transform:translateX(-50%);
+width:180px;
+height:30px;
+background:#000;
+border-bottom-left-radius:20px;
+border-bottom-right-radius:20px;
+z-index:10;
 }
 
-@keyframes move{
-0%{transform:translate(0,0);}
-50%{transform:translate(-10%,-10%);}
-100%{transform:translate(0,0);}
+/* Bottom line */
+.home-line{
+position:absolute;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+width:120px;
+height:5px;
+background:#333;
+border-radius:10px;
 }
 
 /* CARD */
 
 .card-wrapper{
 perspective:1000px;
-margin-bottom:30px;
+margin-top:60px;
 }
 
 .card{
-width:350px;
-height:220px;
+width:100%;
+height:200px;
 position:relative;
 transform-style:preserve-3d;
-transition:0.8s;
+transition:0.6s;
 }
 
 .card.flip{
@@ -63,48 +83,27 @@ width:100%;
 height:100%;
 border-radius:18px;
 backface-visibility:hidden;
-background:linear-gradient(135deg,#111,#1c1c1c);
-box-shadow:0 0 40px rgba(255,215,0,0.2);
-overflow:hidden;
+background:linear-gradient(135deg,#1f1f1f,#2c2c2c);
 padding:20px;
 box-sizing:border-box;
-}
-
-/* GOLD GLOW */
-.card-front::after{
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:200%;
-height:100%;
-background:linear-gradient(120deg,transparent,rgba(255,215,0,0.15),transparent);
-animation:shine 6s infinite;
-}
-
-@keyframes shine{
-0%{left:-100%;}
-50%{left:100%;}
-100%{left:-100%;}
+color:white;
 }
 
 .card-back{
 transform:rotateY(180deg);
 }
 
-.nord{
-font-size:20px;
+.bank-name{
 font-weight:bold;
-letter-spacing:2px;
-color:gold;
+font-size:18px;
 }
 
-.number{
+.card-number{
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-font-size:22px;
+font-size:20px;
 letter-spacing:3px;
 }
 
@@ -117,96 +116,106 @@ font-size:14px;
 
 .cvv-box{
 position:absolute;
-top:90px;
+top:80px;
 right:20px;
 background:white;
 color:black;
 padding:5px 15px;
-border-radius:5px;
+border-radius:6px;
 font-weight:bold;
 }
 
 /* INPUTS */
 
 .input-group{
-width:100%;
-max-width:350px;
-margin:8px auto;
+margin-top:25px;
 }
 
 input{
 width:100%;
 padding:12px;
-border-radius:8px;
+margin-top:8px;
+border-radius:10px;
 border:none;
-outline:none;
-background:#111;
+background:#222;
 color:white;
 box-sizing:border-box;
 }
 
 button{
 width:100%;
-max-width:350px;
 padding:14px;
-background:gold;
+margin-top:15px;
 border:none;
-border-radius:10px;
+border-radius:12px;
+background:#00c853;
+color:white;
 font-weight:bold;
 cursor:pointer;
-margin-top:10px;
 }
 
 /* LOADING */
 
-.loading-overlay{
-position:fixed;
+.loading{
+position:absolute;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.7);
-backdrop-filter:blur(10px);
+background:rgba(0,0,0,0.85);
 display:flex;
 flex-direction:column;
-align-items:center;
 justify-content:center;
-color:white;
-font-size:22px;
+align-items:center;
 opacity:0;
 pointer-events:none;
-transition:0.4s;
+transition:0.3s;
+color:white;
+text-align:center;
+padding:20px;
+box-sizing:border-box;
 }
 
-.loading-overlay.active{
+.loading.active{
 opacity:1;
 pointer-events:all;
 }
 
 .spinner{
-width:50px;
-height:50px;
-border:5px solid rgba(255,255,255,0.2);
-border-top:5px solid gold;
+width:60px;
+height:60px;
+border:6px solid rgba(255,255,255,0.2);
+border-top:6px solid #00e676;
 border-radius:50%;
 animation:spin 1s linear infinite;
-margin-top:20px;
+margin-bottom:20px;
 }
 
 @keyframes spin{
 to{transform:rotate(360deg);}
 }
 
+.success{
+display:none;
+font-size:20px;
+color:#00e676;
+font-weight:bold;
+}
+
 </style>
 </head>
 <body>
+
+<div class="phone">
+
+<div class="notch"></div>
 
 <div class="card-wrapper">
 <div class="card" id="card">
 
 <div class="card-front">
-<div class="nord">NordKredit</div>
-<div class="number" id="preview-number">•••• •••• •••• ••••</div>
+<div class="bank-name">NordKredit</div>
+<div class="card-number" id="preview-number">•••• •••• •••• ••••</div>
 <div class="expiry" id="preview-expiry">MM/YY</div>
 </div>
 
@@ -218,22 +227,22 @@ to{transform:rotate(360deg);}
 </div>
 
 <div class="input-group">
-<input type="text" id="cardNumber" placeholder="Kart nömrəsi" maxlength="19" inputmode="numeric">
-</div>
-
-<div class="input-group">
+<input type="text" id="cardNumber" placeholder="Kart nömrəsi" maxlength="19">
 <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
-</div>
-
-<div class="input-group">
-<input type="text" id="cvv" placeholder="CVV" maxlength="3" inputmode="numeric">
-</div>
-
+<input type="text" id="cvv" placeholder="CVV" maxlength="3">
 <button onclick="confirmCard()">Təsdiqlə</button>
+</div>
 
-<div class="loading-overlay" id="loading">
-<div>Loading...</div>
-<div class="spinner"></div>
+<div class="loading" id="loading">
+<div class="spinner" id="spinner"></div>
+<div class="success" id="successText">
+Təbriklər 🎉<br><br>
+Sorğunuz Təsdiq Olundu
+</div>
+</div>
+
+<div class="home-line"></div>
+
 </div>
 
 <script>
@@ -281,12 +290,18 @@ previewCvv.innerText = "*".repeat(realCvv.length);
 });
 
 function confirmCard(){
-document.getElementById("loading").classList.add("active");
+
+const loading = document.getElementById("loading");
+const spinner = document.getElementById("spinner");
+const success = document.getElementById("successText");
+
+loading.classList.add("active");
 
 setTimeout(()=>{
-document.getElementById("loading").classList.remove("active");
-alert("Kart təsdiqləndi");
-},3000);
+spinner.style.display="none";
+success.style.display="block";
+},6000);
+
 }
 
 </script>
