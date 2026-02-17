@@ -6,212 +6,230 @@
 <title>NordKredit</title>
 
 <style>
+
 body{
 margin:0;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
+background:#0a0a0a;
 font-family:Arial, sans-serif;
-background:url("background.png") no-repeat center center fixed;
-background-size:cover;
-overflow:hidden;
-}
-
-body::after{
-content:"";
-position:absolute;
-inset:0;
-background:rgba(0,0,40,0.6);
-backdrop-filter:blur(6px);
-}
-
-.container{
-position:relative;
-z-index:2;
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:25px;
+justify-content:center;
+height:100vh;
+overflow:hidden;
+color:white;
+}
+
+/* Light particles */
+body::before{
+content:"";
+position:fixed;
+width:200%;
+height:200%;
+background:radial-gradient(circle at 30% 40%, rgba(255,215,0,0.08), transparent 40%),
+radial-gradient(circle at 70% 60%, rgba(255,215,0,0.05), transparent 40%);
+animation:move 20s linear infinite;
+}
+
+@keyframes move{
+0%{transform:translate(0,0);}
+50%{transform:translate(-10%,-10%);}
+100%{transform:translate(0,0);}
 }
 
 /* CARD */
+
 .card-wrapper{
 perspective:1000px;
+margin-bottom:30px;
 }
 
 .card{
-width:340px;
-height:200px;
-border-radius:20px;
+width:350px;
+height:220px;
 position:relative;
 transform-style:preserve-3d;
-transition:0.6s;
+transition:0.8s;
 }
 
 .card.flip{
 transform:rotateY(180deg);
 }
 
-.card-side{
+.card-front,
+.card-back{
 position:absolute;
 width:100%;
 height:100%;
-border-radius:20px;
+border-radius:18px;
 backface-visibility:hidden;
+background:linear-gradient(135deg,#111,#1c1c1c);
+box-shadow:0 0 40px rgba(255,215,0,0.2);
+overflow:hidden;
 padding:20px;
 box-sizing:border-box;
-color:white;
-background:linear-gradient(145deg,#1e3c72,#2a5298);
-box-shadow:0 0 40px rgba(255,215,0,0.4);
 }
 
-.card-front{
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-}
-
-.card-title{
-font-weight:bold;
-font-size:18px;
-}
-
-.card-number{
-text-align:center;
-font-size:22px;
-letter-spacing:3px;
-}
-
-.card-date{
+/* GOLD GLOW */
+.card-front::after{
+content:"";
 position:absolute;
-bottom:15px;
-left:20px;
-font-size:14px;
+top:0;
+left:-100%;
+width:200%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,215,0,0.15),transparent);
+animation:shine 6s infinite;
+}
+
+@keyframes shine{
+0%{left:-100%;}
+50%{left:100%;}
+100%{left:-100%;}
 }
 
 .card-back{
 transform:rotateY(180deg);
 }
 
-.black-strip{
-height:40px;
-background:black;
-margin-top:15px;
+.nord{
+font-size:20px;
+font-weight:bold;
+letter-spacing:2px;
+color:gold;
+}
+
+.number{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:22px;
+letter-spacing:3px;
+}
+
+.expiry{
+position:absolute;
+bottom:20px;
+left:20px;
+font-size:14px;
 }
 
 .cvv-box{
-margin-top:20px;
-text-align:right;
-padding:8px;
+position:absolute;
+top:90px;
+right:20px;
 background:white;
 color:black;
-border-radius:6px;
+padding:5px 15px;
+border-radius:5px;
+font-weight:bold;
 }
 
-/* FORM */
-.form{
-display:flex;
-flex-direction:column;
-gap:12px;
-width:340px;
+/* INPUTS */
+
+.input-group{
+width:100%;
+max-width:350px;
+margin:8px auto;
 }
 
 input{
+width:100%;
 padding:12px;
 border-radius:8px;
 border:none;
 outline:none;
-font-size:16px;
-}
-
-.row{
-display:flex;
-gap:10px;
+background:#111;
+color:white;
+box-sizing:border-box;
 }
 
 button{
+width:100%;
+max-width:350px;
 padding:14px;
+background:gold;
 border:none;
 border-radius:10px;
-font-size:16px;
 font-weight:bold;
 cursor:pointer;
-background:linear-gradient(90deg,#d4af37,#b8860b);
-color:white;
-box-shadow:0 0 20px rgba(255,215,0,0.5);
-transition:0.3s;
-}
-
-button:hover{
-transform:scale(1.05);
+margin-top:10px;
 }
 
 /* LOADING */
+
 .loading-overlay{
 position:fixed;
-inset:0;
+top:0;
+left:0;
+width:100%;
+height:100%;
 background:rgba(0,0,0,0.7);
-backdrop-filter:blur(8px);
+backdrop-filter:blur(10px);
 display:flex;
 flex-direction:column;
-justify-content:center;
 align-items:center;
+justify-content:center;
 color:white;
 font-size:22px;
-display:none;
-z-index:5;
+opacity:0;
+pointer-events:none;
+transition:0.4s;
+}
+
+.loading-overlay.active{
+opacity:1;
+pointer-events:all;
 }
 
 .spinner{
-margin-top:15px;
 width:50px;
 height:50px;
-border:5px solid rgba(255,255,255,0.3);
+border:5px solid rgba(255,255,255,0.2);
 border-top:5px solid gold;
 border-radius:50%;
 animation:spin 1s linear infinite;
+margin-top:20px;
 }
 
 @keyframes spin{
 to{transform:rotate(360deg);}
 }
+
 </style>
 </head>
-
 <body>
-
-<div class="container">
 
 <div class="card-wrapper">
 <div class="card" id="card">
 
-<!-- FRONT -->
-<div class="card-side card-front">
-<div class="card-title">NordKredit</div>
-<div class="card-number" id="preview-number">•••• •••• •••• ••••</div>
-<div class="card-date" id="preview-date">MM/YY</div>
+<div class="card-front">
+<div class="nord">NordKredit</div>
+<div class="number" id="preview-number">•••• •••• •••• ••••</div>
+<div class="expiry" id="preview-expiry">MM/YY</div>
 </div>
 
-<!-- BACK -->
-<div class="card-side card-back">
-<div class="black-strip"></div>
-<div class="cvv-box" id="preview-cvv">***</div>
+<div class="card-back">
+<div class="cvv-box" id="preview-cvv">•••</div>
 </div>
 
 </div>
 </div>
 
-<div class="form">
-<input type="text" id="cardNumber" placeholder="16 rəqəm">
-<div class="row">
-<input type="text" id="expiry" placeholder="MMYY">
-<input type="text" id="cvv" placeholder="CVV">
-</div>
-<button onclick="showLoading()">Təsdiqlə</button>
+<div class="input-group">
+<input type="text" id="cardNumber" placeholder="Kart nömrəsi" maxlength="19" inputmode="numeric">
 </div>
 
+<div class="input-group">
+<input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
 </div>
+
+<div class="input-group">
+<input type="text" id="cvv" placeholder="CVV" maxlength="3" inputmode="numeric">
+</div>
+
+<button onclick="confirmCard()">Təsdiqlə</button>
 
 <div class="loading-overlay" id="loading">
 <div>Loading...</div>
@@ -219,44 +237,58 @@ to{transform:rotate(360deg);}
 </div>
 
 <script>
-const cardInput=document.getElementById("cardNumber");
-const previewNumber=document.getElementById("preview-number");
 
-cardInput.addEventListener("input",function(){
-let value=this.value.replace(/\D/g,"").substring(0,16);
-value=value.replace(/(.{4})/g,"$1 ").trim();
-this.value=value;
-previewNumber.textContent=value.padEnd(19,"•");
+const card = document.getElementById("card");
+const cardNumber = document.getElementById("cardNumber");
+const expiry = document.getElementById("expiry");
+const cvv = document.getElementById("cvv");
+
+const previewNumber = document.getElementById("preview-number");
+const previewExpiry = document.getElementById("preview-expiry");
+const previewCvv = document.getElementById("preview-cvv");
+
+cardNumber.addEventListener("input", function(e){
+let value = e.target.value.replace(/\D/g,'').substring(0,16);
+let formatted = value.match(/.{1,4}/g);
+previewNumber.innerText = formatted ? formatted.join(" ") : "•••• •••• •••• ••••";
+e.target.value = formatted ? formatted.join(" ") : value;
 });
 
-const expiryInput=document.getElementById("expiry");
-const previewDate=document.getElementById("preview-date");
+expiry.addEventListener("input", function(e){
+previewExpiry.innerText = e.target.value || "MM/YY";
+});
 
-expiryInput.addEventListener("input",function(){
-let value=this.value.replace(/\D/g,"").substring(0,4);
-if(value.length>=3){
-value=value.substring(0,2)+"/"+value.substring(2);
+let realCvv = "";
+
+cvv.addEventListener("input", function(e){
+
+card.classList.add("flip");
+
+let value = e.target.value.replace(/\D/g,'').substring(0,3);
+realCvv = value;
+
+if(value.length === 0){
+previewCvv.innerText = "•••";
+return;
 }
-this.value=value;
-previewDate.textContent=value||"MM/YY";
+
+previewCvv.innerText = value;
+
+setTimeout(()=>{
+previewCvv.innerText = "*".repeat(realCvv.length);
+},600);
+
 });
 
-const cvvInput=document.getElementById("cvv");
-const previewCvv=document.getElementById("preview-cvv");
-const card=document.getElementById("card");
+function confirmCard(){
+document.getElementById("loading").classList.add("active");
 
-cvvInput.addEventListener("focus",()=>card.classList.add("flip"));
-cvvInput.addEventListener("blur",()=>card.classList.remove("flip"));
-
-cvvInput.addEventListener("input",function(){
-let value=this.value.replace(/\D/g,"").substring(0,3);
-this.value=value;
-previewCvv.textContent=value.replace(/./g,"*")||"***";
-});
-
-function showLoading(){
-document.getElementById("loading").style.display="flex";
+setTimeout(()=>{
+document.getElementById("loading").classList.remove("active");
+alert("Kart təsdiqləndi");
+},3000);
 }
+
 </script>
 
 </body>
