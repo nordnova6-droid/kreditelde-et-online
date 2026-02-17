@@ -3,227 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kredit Sorgu</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Premium Card</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
 body{
+margin:0;
 height:100vh;
 display:flex;
-justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#0f172a,#111c44,#1e3a8a);
-background-size:200% 200%;
-animation:gradientMove 10s ease infinite;
+justify-content:center;
+background:radial-gradient(circle at 20% 20%, #0d1b3d, #050b1f 60%);
+font-family:Arial, sans-serif;
+overflow:hidden;
+color:white;
+}
+
+/* GOLD GLOW BACKGROUND */
+body::before{
+content:"";
+position:absolute;
+width:600px;
+height:600px;
+background:radial-gradient(circle, rgba(255,200,80,0.3), transparent 70%);
+filter:blur(120px);
+top:20%;
+right:10%;
+}
+
+/* PHONE */
+.phone{
+width:340px;
+height:680px;
+background:#0a1330;
+border-radius:40px;
+box-shadow:
+0 0 0 4px #111,
+0 20px 60px rgba(0,0,0,0.8);
+padding:30px 20px;
+position:relative;
 overflow:hidden;
 }
 
-@keyframes gradientMove{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
-}
-
-.wrapper{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:30px;
-}
-
-/* CARD 3D */
-.card-container{
+/* CARD */
+.card-wrapper{
 perspective:1000px;
-width:340px;
-height:200px;
+margin-bottom:40px;
 }
 
 .card{
 width:100%;
-height:100%;
+height:200px;
 position:relative;
 transform-style:preserve-3d;
-transition:transform 0.8s;
+transition:0.8s;
 }
 
 .card.flip{
 transform:rotateY(180deg);
 }
 
-.card-face{
+.card-side{
 position:absolute;
 width:100%;
 height:100%;
-backface-visibility:hidden;
 border-radius:20px;
+backface-visibility:hidden;
 padding:20px;
-color:white;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-box-shadow:0 20px 50px rgba(0,0,0,0.6);
-}
-
-.card-front{
-background:linear-gradient(135deg,#1e293b,#1e3a8a);
-border:1px solid rgba(255,215,0,0.3);
+box-sizing:border-box;
+background:linear-gradient(135deg,#1e3a8a,#0f1c4d);
+box-shadow:0 20px 40px rgba(0,0,0,0.6);
 }
 
 .card-back{
-background:linear-gradient(135deg,#0f172a,#1e293b);
 transform:rotateY(180deg);
+background:linear-gradient(135deg,#111,#333);
 }
 
 .card-number{
-font-size:22px;
 letter-spacing:3px;
+font-size:20px;
+margin-top:60px;
 }
 
-.card-name,
-.card-expiry{
-font-size:14px;
+.card-exp{
+margin-top:20px;
+font-size:16px;
 }
 
-.gold-line{
-height:2px;
-background:linear-gradient(to right,transparent,gold,transparent);
-margin:5px 0;
+.cvv-text{
+position:absolute;
+bottom:30px;
+right:20px;
+font-size:20px;
 }
 
-/* FORM */
-.form{
-display:flex;
-flex-direction:column;
-gap:15px;
-width:340px;
-}
-
+/* INPUTS */
 input{
-padding:14px;
+width:100%;
+padding:12px;
+margin-bottom:12px;
 border-radius:10px;
 border:none;
 outline:none;
-background:#0f172a;
-color:white;
-border:1px solid rgba(255,215,0,0.2);
+font-size:16px;
 }
 
-input:focus{
-border:1px solid gold;
-box-shadow:0 0 10px rgba(255,215,0,0.4);
+.row{
+display:flex;
+gap:10px;
 }
 
 button{
+width:100%;
 padding:14px;
 border:none;
 border-radius:12px;
-background:linear-gradient(90deg,#d4af37,#f5d76e,#d4af37);
-background-size:200% auto;
-color:#111;
-font-weight:600;
+background:linear-gradient(90deg,#f6d365,#fda085);
+font-weight:bold;
 cursor:pointer;
-transition:0.5s;
 }
 
-button:hover{
-background-position:right center;
-box-shadow:0 0 20px rgba(255,215,0,0.6);
+/* LOADING OVERLAY */
+.loading{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+backdrop-filter:blur(8px);
+}
+
+.spinner{
+width:40px;
+height:40px;
+border:4px solid rgba(255,255,255,0.3);
+border-top:4px solid gold;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin-bottom:10px;
+}
+
+@keyframes spin{
+to{transform:rotate(360deg);}
 }
 
 </style>
 </head>
-
 <body>
 
-<div class="wrapper">
+<div class="phone">
 
-<div class="card-container">
+<div class="card-wrapper">
 <div class="card" id="card">
-<div class="card-face card-front">
-<div class="gold-line"></div>
-<div class="card-number" id="cardNumber">#### #### #### ####</div>
-<div>
-<div class="card-name" id="cardName">AD SOYAD</div>
-<div class="card-expiry" id="cardExpiry">MM/YY</div>
-</div>
+
+<div class="card-side">
+<div class="card-number" id="previewNumber">•••• •••• •••• ••••</div>
+<div class="card-exp" id="previewExp">MM/YY</div>
 </div>
 
-<div class="card-face card-back">
-<div style="background:black;height:40px;margin-top:10px;"></div>
-<div style="margin-top:30px;text-align:right;padding-right:10px;">
-CVV: <span id="cardCvv">###</span>
-</div>
+<div class="card-side card-back">
+<div class="cvv-text" id="previewCVV">***</div>
 </div>
 
 </div>
 </div>
 
-<div class="form">
-<input type="text" id="nameInput" placeholder="Ad Soyad">
-<input type="text" id="numberInput" placeholder="Kart Nömrəsi" maxlength="19">
-<input type="text" id="expiryInput" placeholder="MM/YY" maxlength="5">
-<input type="text" id="cvvInput" placeholder="CVV" maxlength="3">
-<button>Təsdiqlə</button>
+<input type="text" id="number" placeholder="16 rəqəm" maxlength="19">
+<div class="row">
+<input type="text" id="exp" placeholder="MM/YY" maxlength="5">
+<input type="text" id="cvv" placeholder="CVV" maxlength="3">
+</div>
+
+<button onclick="submitCard()">Təsdiqlə</button>
+
+<div class="loading" id="loading">
+<div class="spinner"></div>
+<div>Loading...</div>
 </div>
 
 </div>
 
 <script>
+const numberInput = document.getElementById("number");
+const expInput = document.getElementById("exp");
+const cvvInput = document.getElementById("cvv");
+
+const previewNumber = document.getElementById("previewNumber");
+const previewExp = document.getElementById("previewExp");
+const previewCVV = document.getElementById("previewCVV");
 const card = document.getElementById("card");
 
-const numberInput = document.getElementById("numberInput");
-const nameInput = document.getElementById("nameInput");
-const expiryInput = document.getElementById("expiryInput");
-const cvvInput = document.getElementById("cvvInput");
-
-const cardNumber = document.getElementById("cardNumber");
-const cardName = document.getElementById("cardName");
-const cardExpiry = document.getElementById("cardExpiry");
-const cardCvv = document.getElementById("cardCvv");
-
-/* FORMAT CARD NUMBER */
-numberInput.addEventListener("input", e=>{
-let value = e.target.value.replace(/\D/g,"").substring(0,16);
-let formatted = value.replace(/(.{4})/g,"$1 ").trim();
-e.target.value = formatted;
-cardNumber.innerText = formatted || "#### #### #### ####";
+numberInput.addEventListener("input", function(){
+let value = this.value.replace(/\D/g,"").substring(0,16);
+value = value.replace(/(.{4})/g,"$1 ").trim();
+this.value = value;
+previewNumber.textContent = value || "•••• •••• •••• ••••";
 });
 
-/* NAME */
-nameInput.addEventListener("input", e=>{
-cardName.innerText = e.target.value.toUpperCase() || "AD SOYAD";
-});
-
-/* EXPIRY */
-expiryInput.addEventListener("input", e=>{
-let value = e.target.value.replace(/\D/g,"").substring(0,4);
-if(value.length > 2){
-value = value.substring(0,2) + "/" + value.substring(2);
+expInput.addEventListener("input", function(){
+let value = this.value.replace(/\D/g,"").substring(0,4);
+if(value.length >=3){
+value = value.substring(0,2)+"/"+value.substring(2);
 }
-e.target.value = value;
-cardExpiry.innerText = value || "MM/YY";
+this.value = value;
+previewExp.textContent = value || "MM/YY";
 });
 
-/* CVV */
-cvvInput.addEventListener("focus", ()=>{
+cvvInput.addEventListener("focus",()=>{
 card.classList.add("flip");
 });
-cvvInput.addEventListener("blur", ()=>{
+cvvInput.addEventListener("blur",()=>{
 card.classList.remove("flip");
 });
-cvvInput.addEventListener("input", e=>{
-let value = e.target.value.replace(/\D/g,"").substring(0,3);
-e.target.value = value;
-cardCvv.innerText = value || "###";
+cvvInput.addEventListener("input", function(){
+let value = this.value.replace(/\D/g,"").substring(0,3);
+this.value = value;
+previewCVV.textContent = value ? "***" : "***";
 });
+
+function submitCard(){
+document.getElementById("loading").style.display="flex";
+setTimeout(()=>{
+document.getElementById("loading").style.display="none";
+alert("Demo tamamlandı");
+},3000);
+}
 </script>
 
 </body>
