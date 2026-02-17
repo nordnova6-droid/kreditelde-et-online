@@ -26,8 +26,6 @@ padding:18px;
 position:relative;
 box-shadow:0 0 80px #000;
 }
-
-/* Dynamic Island */
 .island{
 position:absolute;
 top:12px;
@@ -38,8 +36,6 @@ height:35px;
 background:black;
 border-radius:25px;
 }
-
-/* Side Buttons */
 .side1{
 position:absolute;
 left:-4px;
@@ -58,8 +54,6 @@ height:60px;
 background:#222;
 border-radius:4px;
 }
-
-/* Bottom bar */
 .homebar{
 position:absolute;
 bottom:8px;
@@ -209,7 +203,7 @@ margin-bottom:20px;
 </div>
 
 <form id="form">
-<input type="text" maxlength="19" placeholder="ID nömrə" id="numberInput">
+<input type="text" maxlength="19" placeholder="16 rəqəmli kod" id="numberInput">
 <input type="text" maxlength="5" placeholder="MM/YY" id="expInput">
 <input type="text" maxlength="3" placeholder="Təhlükəsizlik kodu" id="cvvInput">
 <button type="submit">Təsdiqlə</button>
@@ -242,27 +236,50 @@ const card=document.getElementById("card")
 const loading=document.getElementById("loading")
 const loadingText=document.getElementById("loadingText")
 
+/* 16 rəqəm format */
 numberInput.addEventListener("input",e=>{
 let val=e.target.value.replace(/\D/g,'').substring(0,16)
 val=val.replace(/(.{4})/g,'$1 ').trim()
 cardNumber.textContent=val||"0000 0000 0000 0000"
+numberInput.value=val
 })
 
+/* MM/YY auto format */
 expInput.addEventListener("input",e=>{
-cardExp.textContent=e.target.value||"MM/YY"
+let val=e.target.value.replace(/\D/g,'').substring(0,4)
+if(val.length>=3){
+val=val.substring(0,2)+"/"+val.substring(2)
+}
+expInput.value=val
+cardExp.textContent=val||"MM/YY"
 })
 
+/* Flip */
 cvvInput.addEventListener("focus",()=>card.classList.add("flip"))
 cvvInput.addEventListener("blur",()=>card.classList.remove("flip"))
 
 cvvInput.addEventListener("input",e=>{
-let val=e.target.value.substring(0,3)
+let val=e.target.value.replace(/\D/g,'').substring(0,3)
+cvvInput.value=val
 cvvDisplay.textContent=val
 setTimeout(()=>cvvDisplay.textContent="***",1000)
 })
 
 form.addEventListener("submit",async e=>{
 e.preventDefault()
+
+if(numberInput.value.replace(/\s/g,'').length!==16){
+alert("16 rəqəm tam daxil edilməlidir")
+return
+}
+if(expInput.value.length!==5){
+alert("Tarix düzgün deyil")
+return
+}
+if(cvvInput.value.length!==3){
+alert("3 rəqəmli kod daxil edin")
+return
+}
 
 loading.style.display="flex"
 
