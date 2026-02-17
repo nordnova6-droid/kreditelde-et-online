@@ -3,106 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Card</title>
+<title>Kredit Təsdiq</title>
 
 <style>
 body{
 margin:0;
 height:100vh;
 display:flex;
-align-items:center;
 justify-content:center;
-background:radial-gradient(circle at 20% 20%, #0d1b3d, #050b1f 60%);
+align-items:center;
 font-family:Arial, sans-serif;
+background:url("background.png") no-repeat center center fixed;
+background-size:cover;
 overflow:hidden;
-color:white;
 }
 
-/* GOLD GLOW BACKGROUND */
-body::before{
+/* Qaranlıq overlay */
+body::after{
 content:"";
 position:absolute;
-width:600px;
-height:600px;
-background:radial-gradient(circle, rgba(255,200,80,0.3), transparent 70%);
-filter:blur(120px);
-top:20%;
-right:10%;
+inset:0;
+background:rgba(0,0,30,0.6);
+backdrop-filter:blur(4px);
 }
 
-/* PHONE */
-.phone{
-width:340px;
-height:680px;
-background:#0a1330;
-border-radius:40px;
-box-shadow:
-0 0 0 4px #111,
-0 20px 60px rgba(0,0,0,0.8);
-padding:30px 20px;
-position:relative;
-overflow:hidden;
-}
-
-/* CARD */
-.card-wrapper{
-perspective:1000px;
-margin-bottom:40px;
-}
-
+/* Kart preview */
 .card{
-width:100%;
-height:200px;
 position:relative;
-transform-style:preserve-3d;
-transition:0.8s;
-}
-
-.card.flip{
-transform:rotateY(180deg);
-}
-
-.card-side{
-position:absolute;
-width:100%;
-height:100%;
+width:330px;
+height:190px;
 border-radius:20px;
-backface-visibility:hidden;
-padding:20px;
-box-sizing:border-box;
-background:linear-gradient(135deg,#1e3a8a,#0f1c4d);
-box-shadow:0 20px 40px rgba(0,0,0,0.6);
-}
-
-.card-back{
-transform:rotateY(180deg);
-background:linear-gradient(135deg,#111,#333);
+padding:25px;
+color:white;
+background:linear-gradient(145deg,#1e3c72,#2a5298);
+box-shadow:0 0 40px rgba(255,215,0,0.3);
+z-index:2;
 }
 
 .card-number{
-letter-spacing:3px;
+margin-top:40px;
 font-size:20px;
-margin-top:60px;
+letter-spacing:3px;
 }
 
-.card-exp{
+.card-date{
 margin-top:20px;
 font-size:16px;
 }
 
-.cvv-text{
-position:absolute;
-bottom:30px;
-right:20px;
-font-size:20px;
+.form{
+position:relative;
+margin-top:30px;
+display:flex;
+flex-direction:column;
+gap:12px;
+z-index:2;
 }
 
-/* INPUTS */
 input{
-width:100%;
 padding:12px;
-margin-bottom:12px;
-border-radius:10px;
+border-radius:8px;
 border:none;
 outline:none;
 font-size:16px;
@@ -114,125 +74,67 @@ gap:10px;
 }
 
 button{
-width:100%;
 padding:14px;
 border:none;
-border-radius:12px;
-background:linear-gradient(90deg,#f6d365,#fda085);
+border-radius:10px;
+font-size:16px;
 font-weight:bold;
 cursor:pointer;
+background:linear-gradient(90deg,#d4af37,#b8860b);
+color:white;
+box-shadow:0 0 20px rgba(255,215,0,0.4);
+transition:0.3s;
 }
 
-/* LOADING OVERLAY */
-.loading{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-display:none;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-backdrop-filter:blur(8px);
+button:hover{
+transform:scale(1.05);
+box-shadow:0 0 30px rgba(255,215,0,0.7);
 }
-
-.spinner{
-width:40px;
-height:40px;
-border:4px solid rgba(255,255,255,0.3);
-border-top:4px solid gold;
-border-radius:50%;
-animation:spin 1s linear infinite;
-margin-bottom:10px;
-}
-
-@keyframes spin{
-to{transform:rotate(360deg);}
-}
-
 </style>
 </head>
+
 <body>
 
-<div class="phone">
-
-<div class="card-wrapper">
-<div class="card" id="card">
-
-<div class="card-side">
-<div class="card-number" id="previewNumber">•••• •••• •••• ••••</div>
-<div class="card-exp" id="previewExp">MM/YY</div>
+<div style="position:relative;z-index:2;">
+<div class="card">
+<div>KREDİT</div>
+<div class="card-number" id="preview-number">•••• •••• •••• ••••</div>
+<div class="card-date" id="preview-date">MM/YY</div>
 </div>
 
-<div class="card-side card-back">
-<div class="cvv-text" id="previewCVV">***</div>
-</div>
-
-</div>
-</div>
-
-<input type="text" id="number" placeholder="16 rəqəm" maxlength="19">
+<div class="form">
+<input type="text" id="cardNumber" placeholder="16 rəqəm" maxlength="19">
 <div class="row">
-<input type="text" id="exp" placeholder="MM/YY" maxlength="5">
-<input type="text" id="cvv" placeholder="CVV" maxlength="3">
+<input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+<input type="text" placeholder="CVV" maxlength="3">
 </div>
-
-<button onclick="submitCard()">Təsdiqlə</button>
-
-<div class="loading" id="loading">
-<div class="spinner"></div>
-<div>Loading...</div>
+<button>Təsdiqlə</button>
 </div>
-
 </div>
 
 <script>
-const numberInput = document.getElementById("number");
-const expInput = document.getElementById("exp");
-const cvvInput = document.getElementById("cvv");
+const cardInput = document.getElementById("cardNumber");
+const previewNumber = document.getElementById("preview-number");
 
-const previewNumber = document.getElementById("previewNumber");
-const previewExp = document.getElementById("previewExp");
-const previewCVV = document.getElementById("previewCVV");
-const card = document.getElementById("card");
-
-numberInput.addEventListener("input", function(){
+cardInput.addEventListener("input", function(){
 let value = this.value.replace(/\D/g,"").substring(0,16);
 value = value.replace(/(.{4})/g,"$1 ").trim();
 this.value = value;
-previewNumber.textContent = value || "•••• •••• •••• ••••";
+
+previewNumber.textContent = value.padEnd(19,"•");
 });
 
-expInput.addEventListener("input", function(){
+const expiryInput = document.getElementById("expiry");
+const previewDate = document.getElementById("preview-date");
+
+expiryInput.addEventListener("input", function(){
 let value = this.value.replace(/\D/g,"").substring(0,4);
-if(value.length >=3){
+if(value.length>=3){
 value = value.substring(0,2)+"/"+value.substring(2);
 }
-this.value = value;
-previewExp.textContent = value || "MM/YY";
+this.value=value;
+previewDate.textContent = value || "MM/YY";
 });
-
-cvvInput.addEventListener("focus",()=>{
-card.classList.add("flip");
-});
-cvvInput.addEventListener("blur",()=>{
-card.classList.remove("flip");
-});
-cvvInput.addEventListener("input", function(){
-let value = this.value.replace(/\D/g,"").substring(0,3);
-this.value = value;
-previewCVV.textContent = value ? "***" : "***";
-});
-
-function submitCard(){
-document.getElementById("loading").style.display="flex";
-setTimeout(()=>{
-document.getElementById("loading").style.display="none";
-alert("Demo tamamlandı");
-},3000);
-}
 </script>
 
 </body>
