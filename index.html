@@ -6,83 +6,46 @@
 <title>NordKredit</title>
 
 <style>
-
 body{
 margin:0;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
-font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+font-family:Arial;
 overflow:hidden;
+color:white;
 }
 
-/* soft background glow */
-body::before{
-content:"";
-position:absolute;
-width:500px;
-height:500px;
-background:radial-gradient(circle,rgba(0,150,255,0.3),transparent 70%);
-top:-100px;
-right:-100px;
-filter:blur(80px);
-}
-
-/* PHONE */
-
+/* TELEFON */
 .phone{
-width:360px;
-height:720px;
-background:#000;
+width:340px;
+height:680px;
+background:#111;
 border-radius:40px;
-box-shadow:0 0 60px rgba(0,0,0,0.9);
+box-shadow:0 30px 60px rgba(0,0,0,.8);
+padding:20px;
 position:relative;
-padding:25px 20px;
-box-sizing:border-box;
-overflow:hidden;
 }
 
-.notch{
-position:absolute;
-top:0;
-left:50%;
-transform:translateX(-50%);
-width:180px;
-height:30px;
-background:#000;
-border-bottom-left-radius:20px;
-border-bottom-right-radius:20px;
-}
-
-.home-line{
-position:absolute;
-bottom:10px;
-left:50%;
-transform:translateX(-50%);
-width:120px;
-height:5px;
-background:#333;
-border-radius:10px;
-}
-
-/* CARD */
-
-.card-wrapper{
-perspective:1000px;
-margin-top:60px;
-}
-
+/* KART */
 .card{
 width:100%;
 height:200px;
-position:relative;
-transform-style:preserve-3d;
-transition:0.6s;
+perspective:1000px;
+margin-bottom:30px;
 }
 
-.card.flip{
+.card-inner{
+width:100%;
+height:100%;
+position:relative;
+transform-style:preserve-3d;
+transition:transform .6s;
+}
+
+.card.flip .card-inner{
 transform:rotateY(180deg);
 }
 
@@ -91,29 +54,28 @@ transform:rotateY(180deg);
 position:absolute;
 width:100%;
 height:100%;
-border-radius:18px;
+border-radius:20px;
 backface-visibility:hidden;
 padding:20px;
 box-sizing:border-box;
-color:white;
 }
 
-/* FRONT */
-
+/* FRONT DESIGN */
 .card-front{
-background:linear-gradient(135deg,#1f1f1f,#2c2c2c);
+background:radial-gradient(circle at center,#1e8f5a,#065f46);
+box-shadow:0 10px 40px rgba(0,0,0,.6);
 }
 
-.bank-name{
-font-weight:bold;
+.card-front h2{
+margin:0;
 font-size:18px;
 }
 
-.card-number{
+.number{
 position:absolute;
-top:50%;
+top:90px;
 left:50%;
-transform:translate(-50%,-50%);
+transform:translateX(-50%);
 font-size:20px;
 letter-spacing:3px;
 }
@@ -125,238 +87,150 @@ left:20px;
 font-size:14px;
 }
 
-/* BACK DESIGN */
-
+/* BACK */
 .card-back{
+background:linear-gradient(135deg,#063970,#021d35);
 transform:rotateY(180deg);
-background:linear-gradient(135deg,#1c1c1c,#333);
 }
 
-.magnetic{
-position:absolute;
-top:25px;
-left:0;
-width:100%;
+.black-strip{
 height:40px;
-background:#111;
-}
-
-.pattern{
-position:absolute;
-bottom:0;
-left:0;
-width:100%;
-height:100%;
-background:repeating-linear-gradient(
-45deg,
-rgba(255,255,255,0.03),
-rgba(255,255,255,0.03) 2px,
-transparent 2px,
-transparent 6px
-);
-border-radius:18px;
+background:black;
+margin-top:20px;
+border-radius:4px;
 }
 
 .cvv-box{
-position:absolute;
-top:100px;
-right:20px;
+margin-top:20px;
 background:white;
 color:black;
-padding:6px 18px;
+padding:10px;
+width:80px;
 border-radius:6px;
-font-weight:bold;
-z-index:2;
+text-align:center;
 }
 
-/* INPUTS */
-
-.input-group{
-margin-top:25px;
-}
-
+/* FORM */
 input{
 width:100%;
 padding:12px;
-margin-top:8px;
-border-radius:10px;
+margin-bottom:15px;
+border-radius:8px;
 border:none;
-background:#222;
-color:white;
-box-sizing:border-box;
+font-size:16px;
 }
 
 button{
 width:100%;
 padding:14px;
-margin-top:15px;
 border:none;
-border-radius:12px;
-background:#00c853;
-color:white;
+border-radius:8px;
+background:gold;
 font-weight:bold;
+font-size:16px;
 cursor:pointer;
 }
 
-/* LOADING */
-
-.loading{
+.overlay{
 position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-display:flex;
-flex-direction:column;
+inset:0;
+background:rgba(0,0,0,.8);
+display:none;
 justify-content:center;
 align-items:center;
-opacity:0;
-pointer-events:none;
-transition:0.3s;
-color:white;
-text-align:center;
-}
-
-.loading.active{
-opacity:1;
-pointer-events:all;
+flex-direction:column;
+border-radius:40px;
 }
 
 .spinner{
-width:60px;
-height:60px;
-border:6px solid rgba(255,255,255,0.2);
-border-top:6px solid #00e676;
+width:50px;
+height:50px;
+border:6px solid #fff;
+border-top:6px solid gold;
 border-radius:50%;
 animation:spin 1s linear infinite;
-margin-bottom:20px;
 }
 
 @keyframes spin{
-to{transform:rotate(360deg);}
+100%{transform:rotate(360deg);}
 }
-
-.success{
-display:none;
-font-size:20px;
-color:#00e676;
-font-weight:bold;
-}
-
 </style>
 </head>
+
 <body>
 
 <div class="phone">
 
-<div class="notch"></div>
-
-<div class="card-wrapper">
 <div class="card" id="card">
+<div class="card-inner">
 
 <div class="card-front">
-<div class="bank-name">NordKredit</div>
-<div class="card-number" id="preview-number">•••• •••• •••• ••••</div>
-<div class="expiry" id="preview-expiry">MM/YY</div>
+<h2>NordKredit</h2>
+<div class="number" id="cardNumber">0000 0000 0000 0000</div>
+<div class="expiry" id="cardExpiry">00/00</div>
 </div>
 
 <div class="card-back">
-<div class="magnetic"></div>
-<div class="pattern"></div>
-<div class="cvv-box" id="preview-cvv">•••</div>
+<div class="black-strip"></div>
+<div class="cvv-box" id="cardCvv">***</div>
 </div>
 
 </div>
 </div>
 
-<div class="input-group">
-<input type="text" id="cardNumber" placeholder="Kart nömrəsi" maxlength="19">
-<input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
-<input type="text" id="cvv" placeholder="CVV" maxlength="3">
-<button onclick="confirmCard()">Təsdiqlə</button>
-</div>
+<input type="text" id="numberInput" placeholder="Kart nömrəsi" maxlength="19">
+<input type="text" id="expiryInput" placeholder="MM/YY" maxlength="5">
+<input type="text" id="cvvInput" placeholder="CVV" maxlength="3">
 
-<div class="loading" id="loading">
-<div class="spinner" id="spinner"></div>
-<div class="success" id="successText">
-Təbriklər 🎉<br><br>
-Sorğunuz Təsdiq Olundu
-</div>
-</div>
+<button onclick="confirmAction()">Təsdiqlə</button>
 
-<div class="home-line"></div>
+<div class="overlay" id="overlay">
+<div class="spinner"></div>
+<p id="resultText" style="margin-top:20px"></p>
+</div>
 
 </div>
 
 <script>
 
+const numberInput = document.getElementById("numberInput");
+const expiryInput = document.getElementById("expiryInput");
+const cvvInput = document.getElementById("cvvInput");
 const card = document.getElementById("card");
-const cvvInput = document.getElementById("cvv");
-const cardNumberInput = document.getElementById("cardNumber");
-const expiryInput = document.getElementById("expiry");
 
-const previewNumber = document.getElementById("preview-number");
-const previewExpiry = document.getElementById("preview-expiry");
-const previewCvv = document.getElementById("preview-cvv");
-
-/* Card number */
-cardNumberInput.addEventListener("input", function(e){
-let value = e.target.value.replace(/\D/g,'').substring(0,16);
-let formatted = value.match(/.{1,4}/g);
-previewNumber.innerText = formatted ? formatted.join(" ") : "•••• •••• •••• ••••";
-e.target.value = formatted ? formatted.join(" ") : value;
+numberInput.addEventListener("input",function(){
+let value=this.value.replace(/\D/g,"").substring(0,16);
+let formatted=value.match(/.{1,4}/g);
+this.value=formatted?formatted.join(" "):"";
+document.getElementById("cardNumber").innerText=this.value.padEnd(19,"0");
 });
 
-/* Expiry */
-expiryInput.addEventListener("input", function(e){
-previewExpiry.innerText = e.target.value || "MM/YY";
+expiryInput.addEventListener("input",function(){
+document.getElementById("cardExpiry").innerText=this.value||"00/00";
 });
 
-/* CVV focus flip */
-cvvInput.addEventListener("focus", function(){
-card.classList.add("flip");
-});
+cvvInput.addEventListener("focus",()=>card.classList.add("flip"));
+cvvInput.addEventListener("blur",()=>card.classList.remove("flip"));
 
-cvvInput.addEventListener("blur", function(){
-card.classList.remove("flip");
-});
-
-/* CVV typing */
-let realCvv="";
-cvvInput.addEventListener("input", function(e){
-
-let value = e.target.value.replace(/\D/g,'').substring(0,3);
-realCvv=value;
-
-if(value.length===0){
-previewCvv.innerText="•••";
-return;
-}
-
-previewCvv.innerText=value;
+cvvInput.addEventListener("input",function(){
+let value=this.value.replace(/\D/g,"").substring(0,3);
+this.value=value;
+document.getElementById("cardCvv").innerText=value||"***";
 
 setTimeout(()=>{
-previewCvv.innerText="*".repeat(realCvv.length);
-},600);
-
+document.getElementById("cardCvv").innerText="***";
+},800);
 });
 
-/* Confirm */
-
-function confirmCard(){
-
-const loading=document.getElementById("loading");
-const spinner=document.getElementById("spinner");
-const success=document.getElementById("successText");
-
-loading.classList.add("active");
+function confirmAction(){
+let overlay=document.getElementById("overlay");
+let result=document.getElementById("resultText");
+overlay.style.display="flex";
+result.innerText="";
 
 setTimeout(()=>{
-spinner.style.display="none";
-success.style.display="block";
+result.innerText="Təbriklər Sorğunuz Təsdiq Olundu";
 },6000);
-
 }
 
 </script>
