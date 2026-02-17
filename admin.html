@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Premium Admin Panel</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       font-family: Arial;
@@ -78,32 +78,28 @@
 <audio id="notifSound" src="notification.mp3" preload="auto"></audio>
 
 <script>
-  const supabase = window.supabase.createClient(
-    "SUPABASE_URL",
-    "SUPABASE_ANON_KEY"
+  const { createClient } = supabase;
+
+  const supabaseClient = createClient(
+    "SUPABASE_URL_BURA",https://gkrfcoyleewxrxbfdunq.supabase.co
+    "SUPABASE_ANON_KEY_BURA"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcmZjb3lsZWV3eHJ4YmZkdW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMjE0NjMsImV4cCI6MjA4NjU5NzQ2M30.vDwDTIIjk69GJgdK9zhtUe-_h-MYCy4C7qehMl-QMJY
   );
 
   let lastCount = 0;
 
   function formatTime(timestamp) {
     const date = new Date(timestamp);
-    return date.toLocaleString("az-AZ", {
-      hour: "2-digit",
-      minute: "2-digit",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
+    return date.toLocaleString("az-AZ");
   }
 
   async function loadMessages() {
-    const { data, error } = await supabase
-      .from("mesajlar")   // ⚡ DÜZƏLDİLDİ
+    const { data, error } = await supabaseClient
+      .from("mesajlar")
       .select("*")
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
+      console.error("Xəta:", error.message);
       return;
     }
 
@@ -125,7 +121,7 @@
     }
 
     if (data.length > lastCount) {
-      document.getElementById("notifSound").play();
+      document.getElementById("notifSound").play().catch(() => {});
     }
 
     lastCount = data.length;
