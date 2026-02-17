@@ -98,7 +98,7 @@
 
   async function loadMessages() {
     const { data, error } = await supabase
-      .from("messages")
+      .from("mesajlar")   // ⚡ DÜZƏLDİLDİ
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -139,8 +139,8 @@
       }
 
       div.innerHTML = `
-        <strong>${msg.name}</strong><br>
-        ${msg.message}<br>
+        <strong>${msg.name || "Ad yoxdur"}</strong><br>
+        ${msg.message || ""}<br>
         <small>${formatTime(msg.created_at)}</small>
       `;
 
