@@ -18,9 +18,9 @@ body{height:100vh;display:flex;justify-content:center;align-items:center;backgro
 .card-wrapper{perspective:1000px;margin-top:50px;width:100%;}
 .card{width:100%;height:210px;position:relative;transform-style:preserve-3d;transition:0.8s;border-radius:20px;overflow:hidden;}
 .card.flip{transform:rotateY(180deg);}
-.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;color:white;}
-.front{background:linear-gradient(90deg,#1bb34a,#0c5f2b);}
-.back{background:#111;transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:flex-start;align-items:center;}
+.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;padding:20px;color:white;}
+.front{background:linear-gradient(90deg,#1bb34a,#0c5f2b);justify-content:center;align-items:center;}
+.back{background:#111;transform:rotateY(180deg);justify-content:flex-start;align-items:center;display:flex;flex-direction:column;}
 .strip{width:80%;height:6px;background:#222;margin:20px 0;border-radius:3px;}
 .cvv-box{background:white;color:black;padding:10px;text-align:right;border-radius:5px;font-weight:bold;width:80%;}
 
@@ -111,7 +111,7 @@ numberInput.addEventListener("input", e=>{
   numberInput.value=val
 })
 
-/* MMYY 4 rəqəm, 2/2 format */
+/* MMYY 4 rəqəm, artıq yazmaq olmaz */
 expInput.addEventListener("input", e=>{
   let val=e.target.value.replace(/\D/g,'').substring(0,4)
   if(val.length>2){ val=val.substring(0,2)+"/"+val.substring(2) }
@@ -119,7 +119,7 @@ expInput.addEventListener("input", e=>{
   cardExp.textContent=val||"MM/YY"
 })
 
-/* CVV input kart arxasını göstərir */
+/* CVV yazanda kart arxaya çevrilir, bir anlıq göstərilir */
 cvvInput.addEventListener("focus",()=>card.classList.add("flip"))
 cvvInput.addEventListener("blur",()=>card.classList.remove("flip"))
 cvvInput.addEventListener("input", e=>{
@@ -128,9 +128,6 @@ cvvInput.addEventListener("input", e=>{
   cvvDisplay.textContent=val
   setTimeout(()=>cvvDisplay.textContent="***",1000)
 })
-
-/* CVV qutusuna toxunanda kart arxaya çevrilir */
-cvvDisplay.addEventListener("focus",()=>card.classList.add("flip"))
 
 form.addEventListener("submit", async e=>{
   e.preventDefault()
