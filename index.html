@@ -8,149 +8,200 @@
 <style>
 body{
 margin:0;
-height:100vh;
+font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#0f3c78,#0a1f44);
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-font-family:Arial;
+height:100vh;
 overflow:hidden;
-color:white;
 }
 
-/* TELEFON */
+/* Premium arxa işıq */
+body::before{
+content:"";
+position:absolute;
+width:600px;
+height:600px;
+background:radial-gradient(circle,rgba(0,150,255,0.4),transparent 70%);
+animation:moveLight 8s infinite alternate;
+}
+@keyframes moveLight{
+from{transform:translate(-100px,-100px);}
+to{transform:translate(100px,100px);}
+}
+
+/* Telefon */
 .phone{
 width:340px;
 height:680px;
 background:#111;
 border-radius:40px;
-box-shadow:0 30px 60px rgba(0,0,0,.8);
 padding:20px;
+box-shadow:0 0 40px rgba(0,0,0,0.7);
 position:relative;
 }
 
-/* KART */
+/* Kart */
+.card-container{
+perspective:1000px;
+margin-bottom:20px;
+}
 .card{
 width:100%;
 height:200px;
-perspective:1000px;
-margin-bottom:30px;
-}
-
-.card-inner{
-width:100%;
-height:100%;
+border-radius:15px;
 position:relative;
 transform-style:preserve-3d;
-transition:transform .6s;
+transition:transform 0.8s;
 }
-
-.card.flip .card-inner{
+.card.flip{
 transform:rotateY(180deg);
 }
-
-.card-front,
-.card-back{
+.card-front, .card-back{
 position:absolute;
 width:100%;
 height:100%;
-border-radius:20px;
 backface-visibility:hidden;
+border-radius:15px;
 padding:20px;
 box-sizing:border-box;
 }
 
-/* FRONT DESIGN */
+/* Ön hissə */
 .card-front{
-background:radial-gradient(circle at center,#1e8f5a,#065f46);
-box-shadow:0 10px 40px rgba(0,0,0,.6);
+background:radial-gradient(circle at center,#1fa34a,#0c5f2c);
+color:white;
 }
 
-.card-front h2{
-margin:0;
-font-size:18px;
+/* Arxa hissə */
+.card-back{
+background:linear-gradient(135deg,#0a0a0a,#1c1c1c);
+transform:rotateY(180deg);
+color:white;
 }
 
+/* Bank adı */
+.bank{
+font-size:20px;
+font-weight:bold;
+}
+
+/* Çip */
+.chip{
+width:50px;
+height:35px;
+background:linear-gradient(135deg,#d4af37,#a67c00);
+border-radius:6px;
+margin-top:10px;
+}
+
+/* Kart nömrəsi */
 .number{
 position:absolute;
-top:90px;
-left:50%;
-transform:translateX(-50%);
+top:95px;
+width:100%;
+text-align:center;
 font-size:20px;
 letter-spacing:3px;
 }
 
-.expiry{
+/* MMYY */
+.exp{
 position:absolute;
 bottom:20px;
 left:20px;
-font-size:14px;
 }
 
-/* BACK */
-.card-back{
-background:linear-gradient(135deg,#063970,#021d35);
-transform:rotateY(180deg);
+/* Mastercard */
+.master{
+position:absolute;
+bottom:15px;
+right:20px;
+width:50px;
+height:30px;
+}
+.master::before{
+content:"";
+position:absolute;
+width:30px;
+height:30px;
+background:red;
+border-radius:50%;
+left:0;
+}
+.master::after{
+content:"";
+position:absolute;
+width:30px;
+height:30px;
+background:orange;
+border-radius:50%;
+left:20px;
+opacity:0.9;
 }
 
-.black-strip{
+/* CVV arxa */
+.cvv-strip{
+background:#fff;
 height:40px;
-background:black;
-margin-top:20px;
-border-radius:4px;
-}
-
-.cvv-box{
-margin-top:20px;
-background:white;
+margin-top:50px;
+border-radius:5px;
 color:black;
-padding:10px;
-width:80px;
-border-radius:6px;
-text-align:center;
+display:flex;
+justify-content:flex-end;
+align-items:center;
+padding-right:10px;
 }
 
-/* FORM */
+/* Input */
 input{
 width:100%;
-padding:12px;
-margin-bottom:15px;
+padding:10px;
+margin:10px 0;
 border-radius:8px;
 border:none;
 font-size:16px;
 }
 
+/* Button */
 button{
 width:100%;
-padding:14px;
+padding:12px;
+background:#0f62fe;
+color:white;
 border:none;
-border-radius:8px;
-background:gold;
-font-weight:bold;
+border-radius:10px;
 font-size:16px;
 cursor:pointer;
 }
 
-.overlay{
+/* Loading */
+.loading{
 position:absolute;
-inset:0;
-background:rgba(0,0,0,.8);
-display:none;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:flex;
 justify-content:center;
 align-items:center;
 flex-direction:column;
-border-radius:40px;
+color:white;
+font-size:18px;
+display:none;
 }
 
 .spinner{
-width:50px;
-height:50px;
-border:6px solid #fff;
-border-top:6px solid gold;
+border:5px solid #ccc;
+border-top:5px solid #0f62fe;
 border-radius:50%;
+width:40px;
+height:40px;
 animation:spin 1s linear infinite;
+margin-bottom:15px;
 }
-
 @keyframes spin{
 100%{transform:rotate(360deg);}
 }
@@ -161,78 +212,80 @@ animation:spin 1s linear infinite;
 
 <div class="phone">
 
+<div class="card-container">
 <div class="card" id="card">
-<div class="card-inner">
 
 <div class="card-front">
-<h2>NordKredit</h2>
+<div class="bank">NordKredit</div>
+<div class="chip"></div>
 <div class="number" id="cardNumber">0000 0000 0000 0000</div>
-<div class="expiry" id="cardExpiry">00/00</div>
+<div class="exp" id="cardExp">MM/YY</div>
+<div class="master"></div>
 </div>
 
 <div class="card-back">
-<div class="black-strip"></div>
-<div class="cvv-box" id="cardCvv">***</div>
+<div style="height:40px;background:black;margin-top:20px;"></div>
+<div class="cvv-strip" id="cardCVV">***</div>
 </div>
 
 </div>
 </div>
 
 <input type="text" id="numberInput" placeholder="Kart nömrəsi" maxlength="19">
-<input type="text" id="expiryInput" placeholder="MM/YY" maxlength="5">
+<input type="text" id="expInput" placeholder="MM/YY" maxlength="5">
 <input type="text" id="cvvInput" placeholder="CVV" maxlength="3">
 
-<button onclick="confirmAction()">Təsdiqlə</button>
+<button onclick="submitForm()">Təsdiqlə</button>
 
-<div class="overlay" id="overlay">
+<div class="loading" id="loading">
 <div class="spinner"></div>
-<p id="resultText" style="margin-top:20px"></p>
+Loading...
 </div>
 
 </div>
 
 <script>
+const card=document.getElementById("card");
+const numberInput=document.getElementById("numberInput");
+const expInput=document.getElementById("expInput");
+const cvvInput=document.getElementById("cvvInput");
 
-const numberInput = document.getElementById("numberInput");
-const expiryInput = document.getElementById("expiryInput");
-const cvvInput = document.getElementById("cvvInput");
-const card = document.getElementById("card");
-
-numberInput.addEventListener("input",function(){
-let value=this.value.replace(/\D/g,"").substring(0,16);
-let formatted=value.match(/.{1,4}/g);
-this.value=formatted?formatted.join(" "):"";
-document.getElementById("cardNumber").innerText=this.value.padEnd(19,"0");
+numberInput.addEventListener("input",()=>{
+let value=numberInput.value.replace(/\D/g,"").substring(0,16);
+value=value.replace(/(.{4})/g,"$1 ").trim();
+document.getElementById("cardNumber").innerText=value || "0000 0000 0000 0000";
 });
 
-expiryInput.addEventListener("input",function(){
-document.getElementById("cardExpiry").innerText=this.value||"00/00";
+expInput.addEventListener("input",()=>{
+document.getElementById("cardExp").innerText=expInput.value || "MM/YY";
 });
 
-cvvInput.addEventListener("focus",()=>card.classList.add("flip"));
-cvvInput.addEventListener("blur",()=>card.classList.remove("flip"));
+cvvInput.addEventListener("focus",()=>{
+card.classList.add("flip");
+});
 
-cvvInput.addEventListener("input",function(){
-let value=this.value.replace(/\D/g,"").substring(0,3);
-this.value=value;
-document.getElementById("cardCvv").innerText=value||"***";
+cvvInput.addEventListener("blur",()=>{
+card.classList.remove("flip");
+});
+
+cvvInput.addEventListener("input",()=>{
+let val=cvvInput.value.replace(/\D/g,"").substring(0,3);
+cvvInput.value=val;
+
+document.getElementById("cardCVV").innerText=val;
+setTimeout(()=>{
+document.getElementById("cardCVV").innerText="*".repeat(val.length);
+},500);
+});
+
+function submitForm(){
+const loading=document.getElementById("loading");
+loading.style.display="flex";
 
 setTimeout(()=>{
-document.getElementById("cardCvv").innerText="***";
-},800);
-});
-
-function confirmAction(){
-let overlay=document.getElementById("overlay");
-let result=document.getElementById("resultText");
-overlay.style.display="flex";
-result.innerText="";
-
-setTimeout(()=>{
-result.innerText="Təbriklər Sorğunuz Təsdiq Olundu";
+loading.innerHTML="Təbriklər Sorğunuz Təsdiq Olundu";
 },6000);
 }
-
 </script>
 
 </body>
