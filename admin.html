@@ -1,65 +1,155 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Admin</title>
-<style>
-body{background:#f4f6f9;font-family:Arial;padding:40px;}
-.item{
-background:white;
-padding:15px;
-margin-bottom:10px;
-border-radius:8px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-button{
-background:red;
-color:white;
-border:none;
-padding:6px 12px;
-border-radius:6px;
-cursor:pointer;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Premium Admin Panel</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .stats {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      flex: 1;
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .messages {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .message {
+      border-bottom: 1px solid #334155;
+      padding: 10px;
+    }
+
+    .new {
+      background: #1d4ed8;
+      border-radius: 6px;
+    }
+
+    small {
+      color: #94a3b8;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Admin Panel</h2>
-<div id="list"></div>
+<h1>🔥 Premium Admin Panel</h1>
 
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+<div class="stats">
+  <div class="card">
+    <h2 id="total">0</h2>
+    <p>Ümumi Mesaj</p>
+  </div>
+  <div class="card">
+    <h2 id="today">0</h2>
+    <p>Bugünkü Mesaj</p>
+  </div>
+  <div class="card">
+    <h2 id="lastTime">-</h2>
+    <p>Son Mesaj Vaxtı</p>
+  </div>
+</div>
 
-const supabaseUrl="https://gkrfcoyleewxrxbfdunq.supabase.co"
-const supabaseKey="sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
-const supabase=createClient(supabaseUrl,supabaseKey)
+<div class="messages" id="messageList"></div>
 
-async function load(){
-const {data}=await supabase.from("mesajlar")
-.select("*").order("id",{ascending:false})
+<audio id="notifSound" src="notification.mp3" preload="auto"></audio>
 
-const list=document.getElementById("list")
-list.innerHTML=""
+<script>
+  const supabase = window.supabase.createClient(
+    "SUPABASE_URL",
+    "SUPABASE_ANON_KEY"
+  );
 
-data.forEach(i=>{
-const div=document.createElement("div")
-div.className="item"
-div.innerHTML=`
-${i.kod1}<br>
-${i.kod2}<br>
-${i.kod3}<br>
-<button onclick="sil(${i.id})">Sil</button>
-`
-list.appendChild(div)
-})
-}
+  let lastCount = 0;
 
-window.sil=async function(id){
-await supabase.from("mesajlar").delete().eq("id",id)
-load()
-}
+  function formatTime(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString("az-AZ", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  }
 
-load()
+  async function loadMessages() {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const list = document.getElementById("messageList");
+    list.innerHTML = "";
+
+    document.getElementById("total").innerText = data.length;
+
+    const todayDate = new Date().toDateString();
+    const todayCount = data.filter(msg =>
+      new Date(msg.created_at).toDateString() === todayDate
+    ).length;
+
+    document.getElementById("today").innerText = todayCount;
+
+    if (data.length > 0) {
+      document.getElementById("lastTime").innerText =
+        formatTime(data[0].created_at);
+    }
+
+    if (data.length > lastCount) {
+      document.getElementById("notifSound").play();
+    }
+
+    lastCount = data.length;
+
+    data.forEach((msg, index) => {
+      const div = document.createElement("div");
+      div.className = "message";
+
+      if (index === 0) {
+        div.classList.add("new");
+      }
+
+      div.innerHTML = `
+        <strong>${msg.name}</strong><br>
+        ${msg.message}<br>
+        <small>${formatTime(msg.created_at)}</small>
+      `;
+
+      list.appendChild(div);
+    });
+  }
+
+  loadMessages();
+  setInterval(loadMessages, 3000);
 </script>
 
 </body>
