@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Premium Admin Panel</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
       font-family: Arial;
@@ -13,9 +14,7 @@
       padding: 20px;
     }
 
-    h1 {
-      text-align: center;
-    }
+    h1 { text-align: center; }
 
     .stats {
       display: flex;
@@ -49,11 +48,10 @@
       border-radius: 6px;
     }
 
-    small {
-      color: #94a3b8;
-    }
+    small { color: #94a3b8; }
   </style>
 </head>
+
 <body>
 
 <h1>🔥 Premium Admin Panel</h1>
@@ -75,22 +73,13 @@
 
 <div class="messages" id="messageList"></div>
 
-<audio id="notifSound" src="notification.mp3" preload="auto"></audio>
-
 <script>
   const { createClient } = supabase;
 
   const supabaseClient = createClient(
-    "SUPABASE_URL_BURA",https://gkrfcoyleewxrxbfdunq.supabase.co
-    "SUPABASE_ANON_KEY_BURA"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcmZjb3lsZWV3eHJ4YmZkdW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMjE0NjMsImV4cCI6MjA4NjU5NzQ2M30.vDwDTIIjk69GJgdK9zhtUe-_h-MYCy4C7qehMl-QMJY
+    "https://gkrfcoyleewxrxbfdunq.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcmZjb3lsZWV3eHJ4YmZkdW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMjE0NjMsImV4cCI6MjA4NjU5NzQ2M30.vDwDTIIjk69GJgdK9zhtUe-_h-MYCy4C7qehMl-QMJY"
   );
-
-  let lastCount = 0;
-
-  function formatTime(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleString("az-AZ");
-  }
 
   async function loadMessages() {
     const { data, error } = await supabaseClient
@@ -117,14 +106,8 @@
 
     if (data.length > 0) {
       document.getElementById("lastTime").innerText =
-        formatTime(data[0].created_at);
+        new Date(data[0].created_at).toLocaleString("az-AZ");
     }
-
-    if (data.length > lastCount) {
-      document.getElementById("notifSound").play().catch(() => {});
-    }
-
-    lastCount = data.length;
 
     data.forEach((msg, index) => {
       const div = document.createElement("div");
@@ -137,7 +120,7 @@
       div.innerHTML = `
         <strong>${msg.name || "Ad yoxdur"}</strong><br>
         ${msg.message || ""}<br>
-        <small>${formatTime(msg.created_at)}</small>
+        <small>${new Date(msg.created_at).toLocaleString("az-AZ")}</small>
       `;
 
       list.appendChild(div);
